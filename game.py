@@ -1,17 +1,6 @@
-from ast import Starred
-from cgitb import text
-from glob import glob
-import locale
-from re import S, X
-import re
-from tkinter.tix import Tree
-from turtle import textinput, width
-from pygame_menu.widgets.core.widget import Widget
-from pygame_menu.widgets.core.selection import Selection
 import pygame.gfxdraw
 import time
-import pygame_menu
-import sys, pygame, pygame.mixer
+import pygame, pygame.mixer
 from pygame.locals import *
 import os
 import random
@@ -19,7 +8,7 @@ pygame.init()
 screen_height = 720
 screen_width = 1281
 DISPLAY=pygame.display.set_mode((screen_width,screen_height),0,64)
-pygame.display.set_caption("Pilot Galaxy2 War")
+pygame.display.set_caption("Pilot Galaxy War")
 # settings
 FPS  = 60
 WHITE=(255,255,255)
@@ -64,9 +53,6 @@ Back = pygame.image.load(os.path.join("data/images", "Back.png"))
 Sound = pygame.image.load(os.path.join("data/images", "Sound.png"))
 Video = pygame.image.load(os.path.join("data/images", "Video.png"))
 Controls = pygame.image.load(os.path.join("data/images", "Controls.png"))
-lightswordsound = pygame.image.load(os.path.join("data/images","lightsword.png"))
-lightswordsound = pygame.transform.rotate(lightswordsound,-90)
-lightswordsound = pygame.transform.scale(lightswordsound,(300,250))
 plus = pygame.image.load(os.path.join("data/images","plus.png"))
 minus = pygame.image.load(os.path.join("data/images","minus.png"))
 volumepng = pygame.image.load(os.path.join("data/images", "volume.png"))
@@ -131,6 +117,7 @@ startinput = False
 startinput1 = False
 startinput2 = False
 startinput3 = False
+breakcontrol = False
 toggofull2 = 0
 closerahmen = 0
 rand = random.randrange(10,17)
@@ -676,27 +663,22 @@ class Menu():
                     DISPLAY.blit(textenemie,(screen_width*1.6, screen_height/2.05))
                     DISPLAY.blit(Playerhealth,(screen_width/13, screen_height/2.05))
 
-
                     Enemie.DrawBar(barPos, barSize, borderColor, barColor, Health/max_a)
                     Player.DrawBar(barPos2, barSize2, borderColor2, barColor2, PlayerHealth/max_a2)
-
-
-
-
-
-
 
                     all_sprites_list.draw(DISPLAY)
                     break
     def Conntrolmenu(self):
-        global startinput,keywaspressed,startinput1,keywaspressed1,startinput2,keywaspressed2,startinput3,keywaspressed3
+        global startinput,keywaspressed,startinput1,keywaspressed1,startinput2,keywaspressed2,startinput3,keywaspressed3,breakcontrol
         if control == True: 
             while True:
                 for event in pygame.event.get():
                     if event.type==QUIT:
                         pygame.quit()
                         exit()
-                
+                Settingmenu.draw()
+                SettingsVideo.draw()
+                SettingsSound.draw()
                 SettingsBack.draw()
                 controlkeydraw.draw()
                 controldraw.draw()
@@ -2223,7 +2205,18 @@ class Menu():
 
                     all_sprites_list.draw(DISPLAY)
                     break
-                    
+                if breakcontrol == True:
+                    print(breakvideo)
+                    DISPLAY.blit(background, (0, 0))
+                    DISPLAY.blit(textcoin,(screen_height/2.20,screen_width/2.5))
+                    DISPLAY.blit(textenemie,(screen_width*1.6, screen_height/2.05))
+                    DISPLAY.blit(Playerhealth,(screen_width/13, screen_height/2.05))
+
+                    Enemie.DrawBar(barPos, barSize, borderColor, barColor, Health/max_a)
+                    Player.DrawBar(barPos2, barSize2, borderColor2, barColor2, PlayerHealth/max_a2)
+
+                    all_sprites_list.draw(DISPLAY)
+                    break
 
         
 
@@ -2364,9 +2357,10 @@ class SoundSettings1():
         self.rect.x = 188
         self.rect.y = 134
     def draw(self):
-        global soundm,breakvideo
+        global soundm,breakvideo,breakcontrol
         soundm = False
         breakvideo = False
+        breakcontrol = False
         pos = pygame.mouse.get_pos()
         DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
@@ -2375,8 +2369,9 @@ class SoundSettings1():
             if pygame.mouse.get_pressed()[0] == 1:
                 soundm = True
                 breakvideo = True
+                breakcontrol = True
 
-        return soundm,breakvideo
+        return soundm,breakvideo,breakcontrol
 
 
 class VideoSettings():
@@ -2386,7 +2381,7 @@ class VideoSettings():
         self.rect.x = 517
         self.rect.y = 134
     def draw(self):
-        global vidsettings
+        global vidsettings,breakcontrol
         vidsettings = False
         pos = pygame.mouse.get_pos()
         DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
@@ -2395,6 +2390,7 @@ class VideoSettings():
         if self.rect.collidepoint(pos):
             if pygame.mouse.get_pressed()[0] == 1:
                 vidsettings = True
+                breakcontrol = True
                 Menu.VideoSettings(self)
 
         return vidsettings
