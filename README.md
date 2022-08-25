@@ -1,4 +1,4 @@
-# Pilot-Galaxy-War
+# Star-Galaxy-War
 I created a 2d star wars shooter
 
 Issues: 
