@@ -121,7 +121,6 @@ toggofull = False
 start = True
 run = True
 hjah = False
-kaka = 0
 keywaspressed = K_SPACE
 keywaspressed1 = K_a
 keywaspressed2 = K_d
