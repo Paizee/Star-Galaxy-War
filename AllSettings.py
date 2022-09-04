@@ -1,4 +1,5 @@
 import imp
+from lib2to3.pytree import Leaf
 from tkinter import Menu
 import pygame.gfxdraw
 import time
@@ -6,14 +7,17 @@ import pygame, pygame.mixer
 from pygame.locals import *
 import os
 import random
+from pymongo import MongoClient
 
 
 pygame.init()
 pygame.mixer.init()
 screen_height = 720
-screen_width = 1281
+screen_width = 1280
 DISPLAY=pygame.display.set_mode((screen_width,screen_height),0,64)
 pygame.display.set_caption("Pilot Galaxy War")
+logoiconpng = pygame.image.load(os.path.join("data/images","logoicon.png"))
+pygame.display.set_icon(logoiconpng)
 # settings
 FPS  = 60
 WHITE=(255,255,255)
@@ -62,6 +66,7 @@ Controls = pygame.image.load(os.path.join("data/images", "Controls.png"))
 plus = pygame.image.load(os.path.join("data/images","plus.png"))
 minus = pygame.image.load(os.path.join("data/images","minus.png"))
 volumepng = pygame.image.load(os.path.join("data/images", "volume.png"))
+music = pygame.mixer.Sound(os.path.join("data/sounds","music.wav"))
 musicpng = pygame.image.load(os.path.join("data/images","music.png"))
 plus1 = pygame.image.load(os.path.join("data/images","plus.png"))
 minus1 = pygame.image.load(os.path.join("data/images","minus.png"))
@@ -77,10 +82,18 @@ moverightpng = pygame.image.load(os.path.join("data/images","Moveright.png"))
 moveleftpng = pygame.image.load(os.path.join("data/images","Moveleft.png"))
 keyinputpng = pygame.image.load(os.path.join("data/images","keyinput.png"))
 settingspng = pygame.image.load(os.path.join("data/images","settingstextpng.png"))
-leaderboardpng = pygame.image.load(os.path.join("data/images","Leaderboardscreen.png"))
-logoiconpng = pygame.image.load(os.path.join("data/images","logoicon.png"))
-
-
+leaderboardpng = pygame.image.load(os.path.join("data/images","Leaderboardwindow.png"))
+userimagepng = pygame.image.load(os.path.join("data/images","c3po.png"))
+registerimagepng = pygame.image.load(os.path.join("data/images","register.png"))
+registerimageinputpng = pygame.image.load(os.path.join("data/images","reginput.png"))
+Submitpng = pygame.image.load(os.path.join("data/images","Submit.png"))
+loginuserimagepng = pygame.image.load(os.path.join("data/images","LoginUser.png"))
+registeruserimagepng = pygame.image.load(os.path.join("data/images","RegisterUser.png"))
+Loginimagepng = pygame.image.load(os.path.join("data/images","Login.png"))
+logoutimagepng = pygame.image.load(os.path.join("data/images","Logout.png"))
+shiptostart = pygame.image.load(os.path.join("data/images","ship.png"))
+Playtostart = pygame.image.load(os.path.join("data/images","Play.png"))
+click = pygame.mixer.Sound(os.path.join("data/sounds","click.wav"))
 
 
 
@@ -121,6 +134,19 @@ toggofull = False
 start = True
 run = True
 hjah = False
+nameinput = False
+emailinput = False
+passwordinput = False
+password2input = False
+Emailsubmitcheck = False
+Passwordsubmitcheck = False
+Namesubmitcheck = False
+Usershow  = False
+Userclicked = 0
+Emailcheckfinish = False
+Passwordcheckfinish = False 
+Namecheckfinish = False
+login = False
 keywaspressed = K_SPACE
 keywaspressed1 = K_a
 keywaspressed2 = K_d
@@ -140,3 +166,13 @@ reso1 = "1680 x 1050"
 reso2 = "1280 x 1024"
 reso3 = "720  x  1280"
 reso4 = "640  x  480"
+cluster = MongoClient("mongodb+srv://Leaderboard1:OCUXEVTl4W8Jy1Dg@mygame.b7uc4ln.mongodb.net/?retryWrites=true&w=majority")
+db = cluster.get_database("Accounts")
+collection= db.get_collection("Users")
+LoginName = ""
+zeit = 10
+kill = False
+Leader = False
+level1run = False
+reg = False
+log = False

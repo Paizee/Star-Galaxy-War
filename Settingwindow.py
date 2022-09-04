@@ -1,4 +1,5 @@
 
+
 import pygame.gfxdraw
 import time
 import pygame, pygame.mixer
@@ -10,6 +11,7 @@ import Enemy
 import level1
 import Player
 import Settingwindow
+from threading import Thread
 class Menu():
     def Menu(self):
         if AllSettings.run == False:
@@ -18,13 +20,20 @@ class Menu():
                     if event.type==QUIT:
                         pygame.quit()
                         exit()
+                pos = pygame.mouse.get_pos()
+                if not Menusbutton.rect.collidepoint(pos):
+                    if not Settingsbutton.rect.collidepoint(pos):
+                        if not Continuebutton.rect.collidepoint(pos):
+                            pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
 
                 Menusbutton.draw()
                 Settingsbutton.draw()
                 Continuebutton.draw()
-
                 pygame.display.flip()
+
                 if AllSettings.run == True:
+                    break
+                if AllSettings.level1run == True:
                     break
         
 
@@ -35,6 +44,12 @@ class Menu():
                     if event.type==QUIT:
                         pygame.quit()
                         exit()
+                pos = pygame.mouse.get_pos()
+                if not SettingsSound.rect.collidepoint(pos):
+                    if not SettingsVideo.rect.collidepoint(pos):
+                        if not SettingsControls.rect.collidepoint(pos):
+                            if not SettingsBack.rect.collidepoint(pos):
+                                pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
                 Settingmenu.draw()
                 SettingsSound.draw()
                 SettingsVideo.draw()
@@ -43,14 +58,6 @@ class Menu():
                 pygame.display.flip()
                 if back == True:
                     AllSettings.DISPLAY.blit(AllSettings.background, (0, 0))
-                    #AllSettings.DISPLAY.blit(textcoin,(screen_height/2.20,screen_width/2.5))
-                    #AllSettings.DISPLAY.blit(textenemie,(screen_width*1.6, screen_height/2.05))
-                    #AllSettings.DISPLAY.blit(Playerhealth,(screen_width/13, screen_height/2.05))
-
-                    Enemy.Enemie.DrawBar(AllSettings.barPos, AllSettings.barSize, AllSettings.borderColor, AllSettings.barColor, AllSettings.Health/AllSettings.max_a)
-                    Player.Player.DrawBar(AllSettings.barPos2, AllSettings.barSize2, AllSettings.borderColor2, AllSettings.barColor2, AllSettings.PlayerHealth/AllSettings.max_a2)
-
-                    AllSettings.all_sprites_list.draw(AllSettings.DISPLAY)
                     
                     break
     def Soundmenu(self):
@@ -61,6 +68,15 @@ class Menu():
                     if event.type==QUIT:
                         pygame.quit()
                         exit()
+                pos = pygame.mouse.get_pos()
+                if not SettingsSound.rect.collidepoint(pos):
+                    if not SettingsVideo.rect.collidepoint(pos):
+                        if not SettingsControls.rect.collidepoint(pos):
+                            if not SoundBack.rect.collidepoint(pos):
+                                if not plus2.rect.collidepoint(pos):
+                                    if not minus2.rect.collidepoint(pos):
+                                        if not minus3.rect.collidepoint(pos):
+                                            pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
                 Settingmenu.draw()
                 SettingsSound.draw()
                 SettingsVideo.draw()
@@ -175,6 +191,7 @@ class Menu():
 
 
                 AllSettings.shot.set_volume(AllSettings.volume/100)
+                AllSettings.click.set_volume(AllSettings.volume/100)
                 AllSettings.explosound.set_volume(AllSettings.volume/100)
                 AllSettings.music.set_volume(AllSettings.musicvolume/100)
 
@@ -189,6 +206,7 @@ class Menu():
                     m3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,295,20,40),border_radius=10)
                     m2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,295,20,40),border_radius=10)
                     m1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,295,20,40),border_radius=10)
+                    AllSettings.music.stop()
                     pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,340,60,25)) 
                 if AllSettings.musicvolume == 10:
                     m9 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(655,295,20,40),border_radius=10)
@@ -269,28 +287,9 @@ class Menu():
                                       
                 pygame.display.update()  
                 if back == True:
-                    AllSettings.DISPLAY.blit(AllSettings.background, (0, 0))
-                    #AllSettings.DISPLAY.blit(textcoin,(screen_height/2.20,screen_width/2.5))
-                    #AllSettings.DISPLAY.blit(textenemie,(screen_width*1.6, screen_height/2.05))
-                    #AllSettings.DISPLAY.blit(Playerhealth,(screen_width/13, screen_height/2.05))
-
-                    Enemy.Enemie.DrawBar(AllSettings.barPos, AllSettings.barSize, AllSettings.borderColor, AllSettings.barColor, AllSettings.Health/AllSettings.max_a)
-                    Player.Player.DrawBar(AllSettings.barPos2, AllSettings.barSize2, AllSettings.borderColor2, AllSettings.barColor2, AllSettings.PlayerHealth/AllSettings.max_a2)
-
-                    AllSettings.all_sprites_list.draw(AllSettings.DISPLAY)
-                    
                     break
 
                 if breaksound == True:
-                    AllSettings.DISPLAY.blit(AllSettings.background, (0, 0))
-                    #AllSettings.DISPLAY.blit(textcoin,(screen_height/2.20,screen_width/2.5))
-                    #AllSettings.DISPLAY.blit(textenemie,(screen_width*1.6, screen_height/2.05))
-                    #AllSettings.DISPLAY.blit(Playerhealth,(screen_width/13, screen_height/2.05))
-
-                    Enemy.Enemie.DrawBar(AllSettings.barPos, AllSettings.barSize, AllSettings.borderColor, AllSettings.barColor, AllSettings.Health/AllSettings.max_a)
-                    Player.Player.DrawBar(AllSettings.barPos2, AllSettings.barSize2, AllSettings.borderColor2, AllSettings.barColor2, AllSettings.PlayerHealth/AllSettings.max_a2)
-
-                    AllSettings.all_sprites_list.draw(AllSettings.DISPLAY)
                     break
 
     def VideoSettings(self):
@@ -300,6 +299,19 @@ class Menu():
                     if event.type==QUIT:
                         pygame.quit()
                         exit()
+                pos = pygame.mouse.get_pos()
+                if not SettingsSound.rect.collidepoint(pos):
+                    if not SettingsVideo.rect.collidepoint(pos):
+                        if not SettingsControls.rect.collidepoint(pos):
+                            if not SettingsBack.rect.collidepoint(pos):
+                                if not Fullcheckbox.rect.collidepoint(pos):
+                                    if not resolution.rect.collidepoint(pos):
+                                        if not dropdownmenu.rect.collidepoint(pos):
+                                            if not re1680x1050.rect.collidepoint(pos):
+                                                if not re1280x1024.rect.collidepoint(pos):
+                                                    if not re720x1280.rect.collidepoint(pos):
+                                                        if not re640x480.rect.collidepoint(pos):
+                                                            pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
                 Settingmenu.draw()
                 SettingsVideo1.draw()
                 SettingsSound1.draw()
@@ -356,19 +368,6 @@ class Menu():
 
 
                 if AllSettings.Apply == True:
-                    AllSettings.DISPLAY=pygame.display.set_mode((AllSettings.screen_width,AllSettings.screen_height),0,32)
-                    AllSettings.DISPLAY.blit(AllSettings.background, (0, 0))
-                    #AllSettings.DISPLAY.blit(textcoin,(AllSettings.AllSettings/2.20,screen_width/2.5))
-                    #AllSettings.DISPLAY.blit(textenemie,(screen_width*1.6, AllSettings.AllSettings/2.05))
-                    #AllSettings.DISPLAY.blit(Playerhealth,(screen_width/13, AllSettings.AllSettings/2.05))
-
-
-                    Enemy.Enemie.DrawBar(AllSettings.barPos, AllSettings.barSize, AllSettings.borderColor, AllSettings.barColor, AllSettings.Health/AllSettings.max_a)
-                    Player.Player.DrawBar(AllSettings.barPos2, AllSettings.barSize2, AllSettings.borderColor2, AllSettings.barColor2, AllSettings.PlayerHealth/AllSettings.max_a2)
-
-
-                    AllSettings.all_sprites_list.draw(AllSettings.DISPLAY)
-
                     Settingmenu.draw()
                     SettingsVideo.draw()
                     SettingsBack.draw()
@@ -419,30 +418,10 @@ class Menu():
 
                 pygame.display.update()  
 
-                if back == True:
-
-                    AllSettings.DISPLAY.blit(AllSettings.background, (0, 0))
-                    #AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_height/2.20,screen_width/2.5))
-                    #AllSettings.DISPLAY.blit(textenemie,(screen_width*1.6, AllSettings.screen_height/2.05))
-                    #AllSettings.DISPLAY.blit(Playerhealth,(screen_width/13, AllSettings.screen_height/2.05))
-
-                    Enemy.Enemie.DrawBar(AllSettings.barPos, AllSettings.barSize, AllSettings.borderColor, AllSettings.barColor, AllSettings.Health/AllSettings.max_a)
-                    Player.Player.DrawBar(AllSettings.barPos2, AllSettings.barSize2, AllSettings.borderColor2, AllSettings.barColor2, AllSettings.PlayerHealth/AllSettings.max_a2)
-
-                    AllSettings.all_sprites_list.draw(AllSettings.DISPLAY)
-                    
+                if back == True:               
                     break
 
                 if breakvideo == True:
-                    AllSettings.DISPLAY.blit(AllSettings.background, (0, 0))
-                    #AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_height/2.20,screen_width/2.5))
-                    #AllSettings.DISPLAY.blit(textenemie,(screen_width*1.6, AllSettings.screen_height/2.05))
-                    #AllSettings.DISPLAY.blit(Playerhealth,(screen_width/13, AllSettings.screen_height/2.05))
-
-                    Enemy.Enemie.DrawBar(AllSettings.barPos, AllSettings.barSize, AllSettings.borderColor, AllSettings.barColor, AllSettings.Health/AllSettings.max_a)
-                    Player.Player.DrawBar(AllSettings.barPos2, AllSettings.barSize2, AllSettings.borderColor2, AllSettings.barColor2, AllSettings.PlayerHealth/AllSettings.max_a2)
-
-                    AllSettings.all_sprites_list.draw(AllSettings.DISPLAY)
                     break
     def Conntrolmenu(self):
         if control == True: 
@@ -451,6 +430,13 @@ class Menu():
                     if event.type==QUIT:
                         pygame.quit()
                         exit()
+                pos = pygame.mouse.get_pos()
+                if not SettingsControls.rect.collidepoint(pos):
+                    if not SettingsVideo.rect.collidepoint(pos):
+                        if not SettingsSound.rect.collidepoint(pos):
+                            if not SettingsBack.rect.collidepoint(pos):
+                                if not controlkeyinputdraw.rect.collidepoint(pos):
+                                    pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
                 Settingmenu.draw()
                 SettingsControls.draw()
                 SettingsVideo.draw()
@@ -1969,27 +1955,12 @@ class Menu():
 
                 pygame.display.update() 
                 if back == True:
-
                     AllSettings.DISPLAY.blit(AllSettings.background, (0, 0))
-                    #AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_height/2.20,screen_width/2.5))
-                    #AllSettings.DISPLAY.blit(textenemie,(screen_width*1.6, AllSettings.screen_height/2.05))
-                    #AllSettings.DISPLAY.blit(Playerhealth,(screen_width/13, AllSettings.screen_height/2.05))
 
-                    Enemy.Enemie.DrawBar(AllSettings.barPos, AllSettings.barSize, AllSettings.borderColor, AllSettings.barColor, AllSettings.Health/AllSettings.max_a)
-                    Player.Player.DrawBar(AllSettings.barPos2, AllSettings.barSize2, AllSettings.borderColor2, AllSettings.barColor2, AllSettings.PlayerHealth/AllSettings.max_a2)
-
-                    AllSettings.all_sprites_list.draw(AllSettings.DISPLAY)
                     break
                 if AllSettings.breakcontrol == True:
                     AllSettings.DISPLAY.blit(AllSettings.background, (0, 0))
-                    #AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_height/2.20,screen_width/2.5))
-                    #AllSettings.DISPLAY.blit(textenemie,(screen_width*1.6, AllSettings.screen_height/2.05))
-                    #AllSettings.DISPLAY.blit(Playerhealth,(screen_width/13, AllSettings.screen_height/2.05))
 
-                    Enemy.Enemie.DrawBar(AllSettings.barPos, AllSettings.barSize, AllSettings.borderColor, AllSettings.barColor, AllSettings.Health/AllSettings.max_a)
-                    Player.Player.DrawBar(AllSettings.barPos2, AllSettings.barSize2, AllSettings.borderColor2, AllSettings.barColor2, AllSettings.PlayerHealth/AllSettings.max_a2)
-
-                    AllSettings.all_sprites_list.draw(AllSettings.DISPLAY)
                     break
 class ButtonMenu():
 
@@ -2003,9 +1974,13 @@ class ButtonMenu():
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
         pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
-                from startmenu import Menu
-                Menu.run()
+                AllSettings.click.play()
+                AllSettings.zeit = 10
+                AllSettings.kill = True
+                AllSettings.level1run = True
+                
 
 class ButtonwinMenu():
 
@@ -2019,9 +1994,12 @@ class ButtonwinMenu():
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
         pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
-                from startmenu import Menu
-                Menu.run()
+                AllSettings.click.play()
+                AllSettings.zeit = 10
+                AllSettings.kill = True
+                AllSettings.level1run = True
             
 class ButtonSettings():
 
@@ -2035,7 +2013,9 @@ class ButtonSettings():
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
         pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
+                AllSettings.click.play()
                 Menu.SettingsMenu(self)
 
 class ButtonContinue():
@@ -2052,8 +2032,13 @@ class ButtonContinue():
 
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
+                AllSettings.click.play()
                 AllSettings.run = True
+                AllSettings.kill = False
+                thread_timer = Thread(target=level1.rungame.timer)
+                thread_timer.start()
 class SettingsMenu():
     def __init__(self):
         self.image = AllSettings.Settingsmenu
@@ -2061,13 +2046,8 @@ class SettingsMenu():
         self.rect.x = 140
         self.rect.y = 60
     def draw(self):
-        pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
-
-        if self.rect.collidepoint(pos):
-            if pygame.mouse.get_pressed()[0] == 1:
-                AllSettings.start = True
                 
 
 class SoundSettings():
@@ -2084,6 +2064,7 @@ class SoundSettings():
 
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 soundm = True
                 Menu.Soundmenu(self)
@@ -2106,6 +2087,7 @@ class SoundSettings1():
 
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 soundm = True
                 breakvideo = True
@@ -2128,6 +2110,7 @@ class VideoSettings():
 
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 vidsettings = True
                 breakcontrol = True
@@ -2150,6 +2133,7 @@ class VideoSettings1():
 
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 vidsettings = True
                 breaksound = True
@@ -2172,6 +2156,7 @@ class ControlsSettings():
         AllSettings.DISPLAY.blit(self.image,(self.rect.x,self.rect.y))
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 control = True
                 breaksound = True
@@ -2193,7 +2178,9 @@ class backSettingsMenu():
 
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
+                AllSettings.click.play()
                 back = True
 
         return back
@@ -2212,7 +2199,9 @@ class Soundback():
 
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
+                AllSettings.click.play()
                 back = True
 
         return back
@@ -2240,10 +2229,12 @@ class Plus():
 
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 now = pygame.time.get_ticks()
                 if now - self.last >= self.cooldown:
                     self.last = now
+                    AllSettings.click.play()
                     AllSettings.volume += 10
                     if AllSettings.volume > 100:
                         AllSettings.volume = 100
@@ -2261,10 +2252,12 @@ class Minus():
 
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:#
                 now = pygame.time.get_ticks()
                 if now - self.last >= self.cooldown:
                     self.last = now
+                    AllSettings.click.play()
                     AllSettings.volume -= 10
                     if AllSettings.volume < 0:
                         AllSettings.volume = 0
@@ -2290,10 +2283,12 @@ class Plus1():
 
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 now = pygame.time.get_ticks()
                 if now - self.last >= self.cooldown:
                     self.last = now
+                    AllSettings.click.play()
                     AllSettings.musicvolume += 10
                     if AllSettings.musicvolume > 100:
                         AllSettings.musicvolume = 100
@@ -2307,14 +2302,17 @@ class Minus1():
         self.last = pygame.time.get_ticks()
     def draw(self):
         pos = pygame.mouse.get_pos()
+        pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 now = pygame.time.get_ticks()
                 if now - self.last >= self.cooldown:
                     self.last = now
+                    AllSettings.click.play()
                     AllSettings.musicvolume -= 10
                     if AllSettings.musicvolume < 0:
                         AllSettings.musicvolume = 0
@@ -2336,17 +2334,18 @@ class dropdown():
         self.cooldown = 300
         self.last = pygame.time.get_ticks()
     def draw(self):
-        global rahmenmenu,closerahmen
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 now = pygame.time.get_ticks()
                 if now - self.last >= self.cooldown:
                     self.last = now
-                    rahmenmenu = True
-                    closerahmen += 1
+                    AllSettings.click.play()
+                    AllSettings.rahmenmenu = True
+                    AllSettings.closerahmen += 1
 
 class dropdownrahmen():
     def __init__(self):
@@ -2382,10 +2381,12 @@ class r1680x1050():
         AllSettings.DISPLAY.blit(self.text,(self.rect.x, self.rect.y))
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 now = pygame.time.get_ticks()
                 if now - self.last >= self.cooldown:
                     self.last = now
+                    AllSettings.click.play()
                     AllSettings.screen_height = int(AllSettings.reso1[7:11])
                     AllSettings.screen_width = int(AllSettings.reso1[0:4])
                     AllSettings.Apply = True
@@ -2404,10 +2405,12 @@ class r1280x1024():
         AllSettings.DISPLAY.blit(self.text,(self.rect.x, self.rect.y))
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 now = pygame.time.get_ticks()
                 if now - self.last >= self.cooldown:
                     self.last = now
+                    AllSettings.click.play()
                     AllSettings.screen_height = int(AllSettings.reso2[7:11])
                     AllSettings.screen_width = int(AllSettings.reso2[0:4])
                     AllSettings.Apply = True
@@ -2427,10 +2430,12 @@ class r720x1280():
         AllSettings.DISPLAY.blit(self.text,(self.rect.x, self.rect.y))
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 now = pygame.time.get_ticks()
                 if now - self.last >= self.cooldown:
                     self.last = now
+                    AllSettings.click.play()
                     AllSettings.screen_height = int(AllSettings.reso3[7:12])
                     AllSettings.screen_width = int(AllSettings.reso3[0:4])
                     AllSettings.Apply = True
@@ -2449,11 +2454,12 @@ class r640x480():
         AllSettings.DISPLAY.blit(self.text,(self.rect.x, self.rect.y))
 
         if self.rect.collidepoint(pos):
-            #pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(800,452,32,300))
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 now = pygame.time.get_ticks()
                 if now - self.last >= self.cooldown:
                     self.last = now
+                    AllSettings.click.play()
                     AllSettings.screen_height = int(AllSettings.reso4[7:12])
                     AllSettings.screen_width = int(AllSettings.reso4[0:4])
                     AllSettings.Apply = True
@@ -2480,11 +2486,12 @@ class Fullscreencheckbox():
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
         if self.rect.collidepoint(pos):
-            #pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(800,452,32,300))
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 now = pygame.time.get_ticks()
                 if now - self.last >= self.cooldown:
                     self.last = now
+                    AllSettings.click.play()
                     AllSettings.toggofull = True
                     AllSettings.toggofull2 += 1
                     pygame.display.toggle_fullscreen()
@@ -2551,15 +2558,19 @@ class keyinputs():
         AllSettings.DISPLAY.blit(self.keyinput3,(self.rect3.x,self.rect3.y))
 
         if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.startinput = True
         if self.rect1.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.startinput1 = True
         if self.rect2.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.startinput2 = True
         if self.rect3.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.startinput3 = True
 

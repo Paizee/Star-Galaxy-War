@@ -41,6 +41,7 @@ class Player(pygame.sprite.Sprite):
                 AllSettings.shot.play()
         if keys[AllSettings.keywaspressed3]:
             AllSettings.run = False
+            AllSettings.kill = True
             Settingwindow.Menu.Menu(self)
 
             
