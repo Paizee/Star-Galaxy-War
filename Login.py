@@ -35,9 +35,9 @@ class Login():
         self.rect5.y = 630
         self.rect6.x = 708
         self.rect6.y = 630
-        cluster = MongoClient("mongodb+srv://Leaderboard1:OCUXEVTl4W8Jy1Dg@mygame.b7uc4ln.mongodb.net/?retryWrites=true&w=majority")
-        db = cluster.get_database("Accounts")
-        collection= db.get_collection("Users")
+        cluster = MongoClient("DATABASE")
+        db = cluster.get_database("DATABASE")
+        collection= db.get_collection("DATABASE")
     def draw(self):
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.image,(0,0))
