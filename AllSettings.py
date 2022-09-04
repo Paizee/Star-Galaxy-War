@@ -166,9 +166,9 @@ reso1 = "1680 x 1050"
 reso2 = "1280 x 1024"
 reso3 = "720  x  1280"
 reso4 = "640  x  480"
-cluster = MongoClient("mongodb+srv://Leaderboard1:OCUXEVTl4W8Jy1Dg@mygame.b7uc4ln.mongodb.net/?retryWrites=true&w=majority")
-db = cluster.get_database("Accounts")
-collection= db.get_collection("Users")
+cluster = MongoClient("DATABASE")
+db = cluster.get_database("DATABASE")
+collection= db.get_collection("DATABASE")
 LoginName = ""
 zeit = 10
 kill = False
