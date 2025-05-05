@@ -1977,7 +1977,7 @@ class ButtonMenu():
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.click.play()
-                AllSettings.zeit = 10
+                #AllSettings.zeit = 10 time left
                 AllSettings.kill = True
                 AllSettings.level1run = True
                 
@@ -1997,7 +1997,7 @@ class ButtonwinMenu():
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.click.play()
-                AllSettings.zeit = 10
+                #AllSettings.zeit = 10
                 AllSettings.kill = True
                 AllSettings.level1run = True
             

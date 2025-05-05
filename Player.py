@@ -13,7 +13,7 @@ import Settingwindow
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self,game):
         super().__init__()
         global PlayerHealth
 
@@ -24,30 +24,33 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = AllSettings.screen_width/2
         self.last = pygame.time.get_ticks()
         self.cooldown = 300
+        self.game = game
         PlayerHealth = 15
-
     def update(self):
         global playerx,playery
+
         keys = pygame.key.get_pressed()
-        if keys[AllSettings.keywaspressed1]:
+
+        if keys[K_a]: # a key => move left
             self.rect.x  -=7
-        elif keys[AllSettings.keywaspressed2]:
+        elif keys[K_d]: # d key => move right
             self.rect.x  +=7
-        if keys[AllSettings.keywaspressed]:
+        if keys[K_SPACE]: # spacebar => shoot if cooldown allows
             now = pygame.time.get_ticks()
             if now - self.last >= self.cooldown:
                 self.last = now
                 Player.shoot(self)
                 AllSettings.shot.play()
-        if keys[AllSettings.keywaspressed3]:
+        if keys[K_ESCAPE]: # escape => stop game and show menu
             AllSettings.run = False
             AllSettings.kill = True
             Settingwindow.Menu.Menu(self)
 
-            
         
         playerx = self.rect.x
         playery = self.rect.y
+
+        #move player finally
         if self.rect.x > AllSettings.screen_width - 125:
             self.rect.x = AllSettings.screen_width - 125
         if self.rect.left < 0:
@@ -63,6 +66,8 @@ class Player(pygame.sprite.Sprite):
         innerPos  = (pos2[0]+3, pos2[1]+3)
         innerSize = ((size2[0]-6) * progress2, size2[1]-6)
         pygame.draw.rect(AllSettings.DISPLAY, barC2, (*innerPos, *innerSize))
+
+
 
 class Bullet(pygame.sprite.Sprite):
 

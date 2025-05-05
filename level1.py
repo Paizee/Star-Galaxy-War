@@ -15,101 +15,133 @@ import coins
 
 
 class rungame():
-    def timer():
-        while not AllSettings.kill:
-            time.sleep(1)
-            AllSettings.zeit -= 1
-            print(AllSettings.zeit)
+    def __init__(self):
+        self.cooldown0 = 1200 #bullet
+        self.cooldown = 300 #bullet
+        self.dur = 60 #bullet
+        self.time_left = 10 #time left 
+        self.start_it = self.runit()
+        self.all_sprites_list = pygame.sprite.Group()
+        self.explosion_list = pygame.sprite.Group()
+        self.enemie_list = pygame.sprite.Group()
+        self.enemie_list2 = pygame.sprite.Group()
+        self.bullet_list = pygame.sprite.Group()
+        self.bulletback_list = pygame.sprite.Group()
+        self.player_list = pygame.sprite.GroupSingle()
 
-    def runit():
+    def timer(self):
+        while not AllSettings.kill: 
+            time.sleep(1)
+            self.time_left -= 1 
+
+    def add_sprites_to_list(self, sprite):
+        self.all_sprites_list.add(sprite)
+
+    def add_bullet_to_list(self, sprite):
+        self.bullet_list.add(sprite)
+
+    def runit(self):
             AllSettings.music.stop()
-            thread_timer = Thread(target=rungame.timer)
+
+            thread_timer = Thread(target=self.timer)
             thread_timer.start()
-            cooldown0 = 1200
+
             last0 = pygame.time.get_ticks()
-            player = Player.Player()
-            AllSettings.player_list.add(player)
-            AllSettings.all_sprites_list.add(player)
+            last = pygame.time.get_ticks()
+
+            #init player and add to sprite list to draw him
+            player = Player.Player(game=self)
+            self.player_list.add(player)
+            self.all_sprites_list.add(player)
+
+            player.rect.x = 200
+            #spawn enemies
             for i in range(10):
                 en = Enemy.Enemie()
-                if AllSettings.all_sprites_list.has(en) == False: 
-                    AllSettings.enemie_list.add(en)
-                    AllSettings.all_sprites_list.add(en)
+                if self.all_sprites_list.has(en) == False: 
+                    self.enemie_list.add(en)
+                    self.all_sprites_list.add(en)
 
-            cooldown = 300
-            last = pygame.time.get_ticks()
-            while not AllSettings.level1run:
+            
+
+            while not AllSettings.level1run: # while loop for game logic 
                 for event in pygame.event.get():
                     if event.type==QUIT:
                         AllSettings.kill = True
                         pygame.quit()
                         exit()
-                AllSettings.all_sprites_list.update()
+                
 
-                for i in range(AllSettings.dur):
+                # update all sprites
+                self.all_sprites_list.update()
+
+                # timer for enemy to shoot back
+                for i in range(self.dur):
                     now = pygame.time.get_ticks()
-                    if now - last0 >= cooldown0:
+                    if now - last0 >= self.cooldown0:
                         last0 = now
                         Enemy.Enemie.shootback()
-
-                for en in AllSettings.enemie_list:
-                    en.DrawHealthBar() 
                 
-                for bullet in AllSettings.bullet_list:
-
+                # check for bullet hits at enemie
+                for bullet in self.bullet_list:
                     now = pygame.time.get_ticks()
-                    if now - last >= cooldown:
+                    if now - last >= self.cooldown:
                         last = now
-                        if pygame.sprite.spritecollide(bullet, AllSettings.enemie_list,dokill=False):
+                        if pygame.sprite.spritecollide(bullet, self.enemie_list,dokill=False):
                             AllSettings.Health -= 1
-                            AllSettings.bullet_list.remove(bullet)
-                            AllSettings.all_sprites_list.remove(bullet)
+                            self.bullet_list.remove(bullet)
+                            self.all_sprites_list.remove(bullet)
 
-
+                    # if last bullet hits => enemie explodes and add coins
                     if AllSettings.Health == 0:
                         bol = True
-                        enemie_hit_list = pygame.sprite.spritecollide(bullet, AllSettings.enemie_list, bol)
+                        enemie_hit_list = pygame.sprite.spritecollide(bullet, self.enemie_list, bol)
                         AllSettings.Health = 4
                         for enemies in enemie_hit_list:
                             expl = Animations.Explosion(enemies.rect.center)
-                            AllSettings.all_sprites_list.add(expl)
-                            AllSettings.bullet_list.remove(bullet)
-                            AllSettings.all_sprites_list.remove(bullet)
+                            self.all_sprites_list.add(expl)
+                            self.bullet_list.remove(bullet)
+                            self.all_sprites_list.remove(bullet)
                             coins.own_coins.add(5)
-                            AllSettings.zeit += 5
+                            self.time_left += 5
                             if AllSettings.PlayerHealth <= 15:
                                 AllSettings.PlayerHealth += 1
-                    if bullet.rect.y < -5: 
-                        AllSettings.bullet_list.remove(bullet)
-                        AllSettings.all_sprites_list.remove(bullet)
 
-                for bulletback in AllSettings.bulletback_list:
+                    # if bullet out of playground => remove
+                    if bullet.rect.y < -5: 
+                        self.bullet_list.remove(bullet)
+                        self.all_sprites_list.remove(bullet)
+                
+                # check for bullet hits on player
+                for bulletback in self.bulletback_list:
                     now = pygame.time.get_ticks()
-                    if now - last >= cooldown:
+                    if now - last >= self.cooldown:
                         last = now
-                        if pygame.sprite.groupcollide(AllSettings.bulletback_list, AllSettings.player_list,False,False):
+                        if pygame.sprite.groupcollide(self.bulletback_list, self.player_list,False,False):
                             AllSettings.PlayerHealth -= 1
-                            AllSettings.bulletback_list.remove(bulletback)
-                            AllSettings.all_sprites_list.remove(bulletback)
-                            
-                if AllSettings.zeit <= 0:
+                            self.bulletback_list.remove(bulletback)
+                            self.all_sprites_list.remove(bulletback)
+
+                # if time is over player dies            
+                if self.time_left <= 0:
                     AllSettings.PlayerHealth = 0
 
+                # if player is dead => remove all from sprite list
                 if AllSettings.PlayerHealth == 0:
-                    Playerhit_list = pygame.sprite.groupcollide(AllSettings.bulletback_list,AllSettings.player_list,True,True)
+                    Playerhit_list = pygame.sprite.groupcollide(self.bulletback_list,self.player_list,True,True)
                     for player in Playerhit_list:
                         expl = Animations.Explosion(player.rect.center)
-                        AllSettings.all_sprites_list.add(expl)
-                        AllSettings.bulletback_list.remove(bulletback)
-                        AllSettings.all_sprites_list.remove(bulletback)
-                        AllSettings.player_list.remove(player)
-                        AllSettings.all_sprites_list.remove(player)
+                        self.all_sprites_list.add(expl)
+                        self.bulletback_list.remove(bulletback)
+                        self.all_sprites_list.remove(bulletback)
+                        self.player_list.remove(player)
+                        self.all_sprites_list.remove(player)
                         
                         if bulletback.rect.y > AllSettings.screen_height:
-                            AllSettings.bulletback_list.remove(bulletback)
-                            AllSettings.all_sprites_list.remove(bulletback)
+                            self.bulletback_list.remove(bulletback)
+                            self.all_sprites_list.remove(bulletback)
 
-
+                # canvas drawing shit
                 font_obj = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"), 64)
                 textcoin = font_obj.render("+"+str(coins.own_coins.amount)+"💰", True, AllSettings.Yellow)
 
@@ -126,7 +158,7 @@ class rungame():
                 loose = font_obj4.render("imagine you Loose in this Game!", True, AllSettings.Yellow)
 
                 font_obj5 = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 32)
-                timer = font_obj5.render("Time Left: "+str(AllSettings.zeit)+" s", True, AllSettings.Yellow)
+                timer = font_obj5.render("Time Left: "+str(self.time_left)+" s", True, AllSettings.Yellow)
 
 
                 AllSettings.DISPLAY.blit(AllSettings.background, (0, 0))
@@ -138,29 +170,29 @@ class rungame():
                 barPos2= (AllSettings.screen_width/15, AllSettings.screen_height/1.15)
                 Enemy.Enemie.DrawBar(barPos, AllSettings.barSize, AllSettings.borderColor, AllSettings.barColor, AllSettings.Health/AllSettings.max_a)
                 Player.Player.DrawBar(barPos2, AllSettings.barSize2, AllSettings.borderColor2, AllSettings.barColor2, AllSettings.PlayerHealth/AllSettings.max_a2)
+                self.all_sprites_list.draw(AllSettings.DISPLAY)
 
-                AllSettings.all_sprites_list.draw(AllSettings.DISPLAY)
-
-                if AllSettings.all_sprites_list.has(AllSettings.player_list) == False:
+                # if sprite list not contains player (player is dead)
+                if self.all_sprites_list.has(self.player_list) == False:
                     AllSettings.kill = True
                     winmenu = Settingwindow.ButtonwinMenu()
                     if AllSettings.login == True:
-                        dbcoins = str(AllSettings.collection.find_one({"Name":"Admin"},{ "_id": 0,"Coins": 1}))
+                        #dbcoins = str(AllSettings.collection.find_one({"Name":"Admin"},{ "_id": 0,"Coins": 1}))
                         dbcoins = dbcoins.strip("{'Coins': }")
-                        AllSettings.collection.find_one_and_update({"Name":"Admin"}, {"$set" : {"Coins": Coins}})
+                        #AllSettings.collection.find_one_and_update({"Name":"Admin"}, {"$set" : {"Coins": Coins}})
                     AllSettings.DISPLAY.blit(AllSettings.background,(0,0))
                     AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_width/2.2,AllSettings.screen_height/2.4))
                     AllSettings.DISPLAY.blit(loose,(AllSettings.screen_width/6,AllSettings.screen_height/4))
                     
                     winmenu.draw()
-
-                if AllSettings.all_sprites_list.has(AllSettings.enemie_list) == False:
+                # if sprite lsit not contains enemie (player won)
+                if self.all_sprites_list.has(self.enemie_list) == False:
                     AllSettings.kill = True
                     winmenu = Settingwindow.ButtonwinMenu()
                     if AllSettings.login == True:
-                        dbcoins = str(AllSettings.collection.find_one({"Name":"Admin"},{ "_id": 0,"Coins": 1}))
+                        #dbcoins = str(AllSettings.collection.find_one({"Name":"Admin"},{ "_id": 0,"Coins": 1}))
                         dbcoins = dbcoins.strip("{'Coins': }")
-                        AllSettings.collection.find_one_and_update({"Name":"Admin"}, {"$set" : {"Coins": Coins}})
+                        #AllSettings.collection.find_one_and_update({"Name":"Admin"}, {"$set" : {"Coins": Coins}})
                     AllSettings.DISPLAY.blit(AllSettings.background,(0,0))
                     AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_width/2.2,AllSettings.screen_height/2.4))
                     AllSettings.DISPLAY.blit(won,(AllSettings.screen_width/4,AllSettings.screen_height/4))

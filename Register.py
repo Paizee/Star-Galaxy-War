@@ -10,13 +10,10 @@ import Animations
 import Enemy
 import level1
 import Settingwindow
-from pymongo import cursor
-from pymongo import MongoClient
 from verify_email import verify_email
 
 class Register():
     def __init__(self):
-        global collection,db,cluster
         self.image = AllSettings.registerimagepng
         self.backimage = AllSettings.Back
         self.registerinputimage = AllSettings.registerimageinputpng
@@ -42,9 +39,7 @@ class Register():
         self.rect5.y = 630
         self.rect6.x = 708
         self.rect6.y = 630
-        cluster = MongoClient("DATABASE")
-        db = cluster.get_database("DATABASE")
-        collection= db.get_collection("DATABASE")
+
     def draw(self):
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.image,(0,0))
@@ -169,7 +164,7 @@ class Register():
                     AllSettings.Passwordcheckfinish = True
             
             if AllSettings.Namesubmitcheck == True:
-                result = collection.find_one({"Name":name_text})
+                #result = collection.find_one({"Name":name_text})
                 if result == None:
                     namefail = ""
                     AllSettings.Namecheckfinish = True
@@ -195,13 +190,13 @@ class Register():
                         if now - last >= cooldown:
                             last = now
                             post = {"Name":name_text,"Email":email_text,"Password":password2_text,"Coins": 0}
-                            collection.insert_one(post)
-                            if not collection.find_one({"Email":email_text,"Password":password2_text}) == None:
-                                AllSettings.Emailcheckfinish = False
-                                AllSettings.Passwordcheckfinish = False
-                                AllSettings.Namecheckfinish = False
-                                AllSettings.LoginName = name_text
-                                AllSettings.login = True
+                            #collection.insert_one(post)
+                            # if not collection.find_one({"Email":email_text,"Password":password2_text}) == None:
+                            #    AllSettings.Emailcheckfinish = False
+                             #   AllSettings.Passwordcheckfinish = False
+                              #  AllSettings.Namecheckfinish = False
+                               # AllSettings.LoginName = name_text
+                                # AllSettings.login = True
                             
 
                 

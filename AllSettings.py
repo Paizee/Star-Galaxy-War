@@ -6,8 +6,6 @@ import pygame, pygame.mixer
 from pygame.locals import *
 import os
 import random
-from pymongo import MongoClient
-
 
 pygame.init()
 pygame.mixer.init()
@@ -119,13 +117,7 @@ Playername = "Player"
 enemiename = "TieFighter"
 PlayerHealth = 15
 Health = 4
-all_sprites_list = pygame.sprite.Group()
-explosion_list = pygame.sprite.Group()
-enemie_list = pygame.sprite.Group()
-enemie_list2 = pygame.sprite.Group()
-bullet_list = pygame.sprite.Group()
-bulletback_list = pygame.sprite.Group()
-player_list = pygame.sprite.GroupSingle()
+
 clock = pygame.time.Clock()
 bol = False
 Settings = True
@@ -160,18 +152,14 @@ breakcontrol = False
 toggofull2 = 0
 closerahmen = 0
 rand = random.randrange(10,17)
-dur = 60
+
 volume = 100
 musicvolume = 100
 reso1 = "1680 x 1050"
 reso2 = "1280 x 1024"
 reso3 = "720  x  1280"
 reso4 = "640  x  480"
-cluster = MongoClient("DATABASE")
-db = cluster.get_database("DATABASE")
-collection= db.get_collection("DATABASE")
 LoginName = ""
-zeit = 10
 kill = False
 Leader = False
 level1run = False

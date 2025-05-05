@@ -10,12 +10,9 @@ import Animations
 import Enemy
 import level1
 import Settingwindow
-from pymongo import cursor
-from pymongo import MongoClient
 
 class Login():
     def __init__(self):
-        global collection,db,cluster
         self.image = AllSettings.Loginimagepng
         self.backimage = AllSettings.Back
         self.registerinputimage = AllSettings.registerimageinputpng
@@ -35,9 +32,7 @@ class Login():
         self.rect5.y = 630
         self.rect6.x = 708
         self.rect6.y = 630
-        cluster = MongoClient("DATABASE")
-        db = cluster.get_database("DATABASE")
-        collection= db.get_collection("DATABASE")
+
     def draw(self):
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.image,(0,0))
@@ -109,18 +104,18 @@ class Login():
                                 AllSettings.passwordinput = False
                             
             if AllSettings.Passwordsubmitcheck == True:
-                if collection.find_one({"Password":password_text,"Email":email_text}) == None:
-                    passwordfail = "Password is incorrect!"
-                else: 
-                    passwordfail = ""
-                    AllSettings.Passwordcheckfinish = True
+                #if collection.find_one({"Password":password_text,"Email":email_text}) == None:
+                #    passwordfail = "Password is incorrect!"
+                #else: 
+                #    passwordfail = ""
+                #    AllSettings.Passwordcheckfinish = True
 
             if AllSettings.Emailsubmitcheck == True:
-                if collection.find_one({"Email":email_text}) == None:
-                    emailfail = "Email is incorrect!"
-                else: 
-                    emailfail = ""
-                    AllSettings.Emailcheckfinish = True
+                #if collection.find_one({"Email":email_text}) == None:
+                #    emailfail = "Email is incorrect!"
+                #else: 
+                #    emailfail = ""
+                #    AllSettings.Emailcheckfinish = True
             if AllSettings.Passwordsubmitcheck == False:
                 passwordfail = ""
             if AllSettings.Emailsubmitcheck == False:

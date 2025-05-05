@@ -12,9 +12,6 @@ import Enemy
 import level1
 import Player
 import Settingwindow
-import pymongo
-from pymongo import MongoClient
-
 
 class Leaderboard():
     def __init__(self):
@@ -40,45 +37,21 @@ class Leaderboard():
                 AllSettings.Leader = True
         font_obj = pygame.font.Font(os.path.join("data/fonts","Rubik-Bold.TTF"), 32)
         font_objcoins = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.TTF"), 32)
-        place1name = AllSettings.collection.find({},{"_id": 0,"Name": 1}).sort("Coins",-1).limit(1)[0]
-        place1name = str(place1name)[10:25].replace("'}","")
-        place1coins = AllSettings.collection.find({},{"_id": 0,"Coins": 1}).sort("Coins",-1).limit(1)[0]
-        place1coins = str(place1coins)[10:25].replace("}","")
         #
-        place2name = AllSettings.collection.find({},{"_id": 0,"Name": 1}).sort("Coins",-1).limit(1)[1]
-        place2name = str(place2name)[10:25].replace("'}","")
-        place2coins = AllSettings.collection.find({},{"_id": 0,"Coins": 1}).sort("Coins",-1).limit(1)[1]
-        place2coins = str(place2coins)[10:25].replace("}","")
+        textplace1name= font_obj.render(str("place1name"),True,AllSettings.Yellow)
+        textplace1coins = font_objcoins.render(str(0)+"💰",True,AllSettings.Yellow)
         #
-        place3name = AllSettings.collection.find({},{"_id": 0,"Name": 1}).sort("Coins",-1).limit(1)[2]
-        place3name = str(place3name)[10:25].replace("'}","")
-        place3coins = AllSettings.collection.find({},{"_id": 0,"Coins": 1}).sort("Coins",-1).limit(1)[2]
-        place3coins = str(place3coins)[10:25].replace("}","")
+        textplace2name= font_obj.render(str("place2name"),True,AllSettings.Yellow)
+        textplace2coins = font_objcoins.render(str(0)+"💰",True,AllSettings.Yellow)
         #
-        place4name = AllSettings.collection.find({},{"_id": 0,"Name": 1}).sort("Coins",-1).limit(1)[3]
-        place4name = str(place4name)[10:25].replace("'}","")
-        place4coins = AllSettings.collection.find({},{"_id": 0,"Coins": 1}).sort("Coins",-1).limit(1)[3]
-        place4coins = str(place4coins)[10:25].replace("}","")
+        textplace3name= font_obj.render(str("place3name"),True,AllSettings.Yellow)
+        textplace3coins = font_objcoins.render(str(0)+"💰",True,AllSettings.Yellow)
         #
-        place5name = AllSettings.collection.find({},{"_id": 0,"Name": 1}).sort("Coins",-1).limit(1)[4]
-        place5name = str(place5name)[10:25].replace("'}","")
-        place5coins = AllSettings.collection.find({},{"_id": 0,"Coins": 1}).sort("Coins",-1).limit(1)[4]
-        place5coins = str(place5coins)[10:25].replace("}","")
+        textplace4name= font_obj.render(str("place4name"),True,AllSettings.Yellow)
+        textplace4coins = font_objcoins.render(str(0)+"💰",True,AllSettings.Yellow)
         #
-        textplace1name= font_obj.render(str(place1name),True,AllSettings.Yellow)
-        textplace1coins = font_objcoins.render(str(place1coins)+"💰",True,AllSettings.Yellow)
-        #
-        textplace2name= font_obj.render(str(place2name),True,AllSettings.Yellow)
-        textplace2coins = font_objcoins.render(str(place2coins)+"💰",True,AllSettings.Yellow)
-        #
-        textplace3name= font_obj.render(str(place3name),True,AllSettings.Yellow)
-        textplace3coins = font_objcoins.render(str(place3coins)+"💰",True,AllSettings.Yellow)
-        #
-        textplace4name= font_obj.render(str(place4name),True,AllSettings.Yellow)
-        textplace4coins = font_objcoins.render(str(place4coins)+"💰",True,AllSettings.Yellow)
-        #
-        textplace5name= font_obj.render(str(place5name),True,AllSettings.Yellow)
-        textplace5coins = font_objcoins.render(str(place5coins)+"💰",True,AllSettings.Yellow)
+        textplace5name= font_obj.render(str("place5name"),True,AllSettings.Yellow)
+        textplace5coins = font_objcoins.render(str(0)+"💰",True,AllSettings.Yellow)
         
         AllSettings.DISPLAY.blit(textplace1coins,(500,152))
         AllSettings.DISPLAY.blit(textplace1name,(650,152))

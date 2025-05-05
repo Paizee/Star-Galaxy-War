@@ -108,7 +108,8 @@ class Menu():
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.click.play()
-                thread_lev1 = Thread(target=level1.rungame.runit())
+                game = level1.rungame()
+                thread_lev1 = Thread(target=game.start_it())
                 thread_lev1.start()
         if self.rect4.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
