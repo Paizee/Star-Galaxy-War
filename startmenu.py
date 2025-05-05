@@ -9,6 +9,7 @@ import level1
 import Player
 import Settingwindow
 from threading import Thread
+import coins
 
 background = pygame.image.load(os.path.join("data/images","background.png")).convert()
 Play_ = pygame.image.load(os.path.join("data/images","Play_.png"))
@@ -59,23 +60,19 @@ class Menu():
         self.cooldown = 300
 
     def drawcoinsunlogged(self):
-        font_objcoins = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"), 64)
-        font_objnotlogged = pygame.font.Font(os.path.join("data/fonts","Rubik-Bold.TTF"), 16)
-        textcoin = font_objcoins.render(str(AllSettings.coins)+"💰", True, AllSettings.Yellow)
-        infonotlogged = font_objnotlogged.render("You're not logged in, the coins are not save!",True,(255,0,0))
+        textcoin = AllSettings.font_objcoins.render(str(coins.own_coins.amount)+"💰", True, AllSettings.Yellow)
+        infonotlogged = AllSettings.font_objnotlogged.render("You're not logged in, the coins are not save!",True,(255,0,0))
         AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_width/1.2,AllSettings.screen_height/1.2))
         AllSettings.DISPLAY.blit(infonotlogged,(AllSettings.screen_width/1.5,AllSettings.screen_height/1.05))
         
     def drawcoinsloggedin(self):
-        font_objcoins = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"), 64)
-        dbcoins = str(AllSettings.collection.find_one({"Name":"Admin"},{ "_id": 0,"Coins": 1}))
-        dbcoins = dbcoins.strip("{'Coins': }")
-        textcoin = font_objcoins.render(str(dbcoins)+"💰", True, AllSettings.Yellow)
+        textcoin = AllSettings.font_objcoins.render(str(coins.own.amount)+"💰", True, AllSettings.Yellow)
         AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_width/1.2,AllSettings.screen_height/1.2))
 
     def drawUserunlogged(self):
         AllSettings.DISPLAY.blit(self.loginuserimagepng,(self.rect6.x,self.rect6.y))
         AllSettings.DISPLAY.blit(self.registeruserimagepng,(self.rect7.x,self.rect7.y))
+
     def drawUserloggedin(self):
         AllSettings.DISPLAY.blit(self.logoutimagepng,(self.rect8.x,self.rect8.y))
 
@@ -171,7 +168,7 @@ class Menu():
         menu = Menu()
         while True:
             for event in pygame.event.get():
-                if event.type==QUIT:
+                if event.type == QUIT:
                     pygame.quit()
                     exit() 
             if AllSettings.login == True:

@@ -1,5 +1,4 @@
-import imp
-from lib2to3.pytree import Leaf
+import importlib
 from tkinter import Menu
 import pygame.gfxdraw
 import time
@@ -94,6 +93,9 @@ logoutimagepng = pygame.image.load(os.path.join("data/images","Logout.png"))
 shiptostart = pygame.image.load(os.path.join("data/images","ship.png"))
 Playtostart = pygame.image.load(os.path.join("data/images","Play.png"))
 click = pygame.mixer.Sound(os.path.join("data/sounds","click.wav"))
+font_objcoins = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"), 64)
+font_objnotlogged = pygame.font.Font(os.path.join("data/fonts","Rubik-Bold.TTF"), 16)
+
 
 
 
@@ -129,7 +131,6 @@ bol = False
 Settings = True
 rahmenmenu = False
 Apply = False
-coins = 0
 toggofull = False
 start = True
 run = True

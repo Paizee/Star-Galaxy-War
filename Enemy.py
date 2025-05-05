@@ -14,19 +14,20 @@ import Settingwindow
 class Enemie(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        global tfx,tfy,Health
- 
+        global tfx,tfy
+        
+        self.id = random.randint(0,100)
         self.image = AllSettings.enemieimage
         self.rect = self.image.get_rect()
         tfx = random.randrange(AllSettings.screen_width)
-        tfy = random.randrange(AllSettings.screen_height/1.5)
+        tfy = random.randrange(round(AllSettings.screen_height/1.5))
         self.rect.x = tfx
         self.rect.y = tfy
         numsx = [2,-2]
         self.speedx = random.choice(numsx)
         numsy = [-1,1]
         self.speedy = random.choice(numsy)
-        Health = 4
+        self.health = 4
     
     def shootback():
         for enemies in AllSettings.enemie_list:
@@ -35,9 +36,6 @@ class Enemie(pygame.sprite.Sprite):
             AllSettings.bulletback_list.add(bulletback)
 
     def update(self):
-
-        tfy = self.rect.y
-        tfx = self.rect.x 
         self.rect.x += self.speedx
         self.rect.y += self.speedy
         if self.rect.x > AllSettings.screen_width - 90:
@@ -54,6 +52,10 @@ class Enemie(pygame.sprite.Sprite):
         innerPos  = (pos[0]+3, pos[1]+3)
         innerSize = ((size[0]-6) * progress, size[1]-6)
         pygame.draw.rect(AllSettings.DISPLAY, barC, (*innerPos, *innerSize))
+
+    def DrawHealthBar(self): 
+        pygame.draw.rect(AllSettings.DISPLAY, AllSettings.Lightgrey, (self.rect.x,self.rect.y, 100, 10),8)
+        pygame.draw.rect(AllSettings.DISPLAY, AllSettings.Green, (self.rect.x,self.rect.y, 100 / self.health,10), 8)
 
 class Bulletback(pygame.sprite.Sprite):
 

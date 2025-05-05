@@ -11,6 +11,9 @@ import Enemy
 import Player
 import Settingwindow
 from threading import Thread
+import coins
+
+
 class rungame():
     def timer():
         while not AllSettings.kill:
@@ -30,27 +33,28 @@ class rungame():
             for i in range(10):
                 en = Enemy.Enemie()
                 if AllSettings.all_sprites_list.has(en) == False: 
-
                     AllSettings.enemie_list.add(en)
                     AllSettings.all_sprites_list.add(en)
 
             cooldown = 300
             last = pygame.time.get_ticks()
             while not AllSettings.level1run:
-                dt = AllSettings.clock.tick(60)
-                keys = pygame.key.get_pressed()
                 for event in pygame.event.get():
                     if event.type==QUIT:
                         AllSettings.kill = True
                         pygame.quit()
                         exit()
                 AllSettings.all_sprites_list.update()
+
                 for i in range(AllSettings.dur):
                     now = pygame.time.get_ticks()
                     if now - last0 >= cooldown0:
                         last0 = now
                         Enemy.Enemie.shootback()
 
+                for en in AllSettings.enemie_list:
+                    en.DrawHealthBar() 
+                
                 for bullet in AllSettings.bullet_list:
 
                     now = pygame.time.get_ticks()
@@ -71,14 +75,13 @@ class rungame():
                             AllSettings.all_sprites_list.add(expl)
                             AllSettings.bullet_list.remove(bullet)
                             AllSettings.all_sprites_list.remove(bullet)
-                            AllSettings.coins += 5
+                            coins.own_coins.add(5)
                             AllSettings.zeit += 5
                             if AllSettings.PlayerHealth <= 15:
                                 AllSettings.PlayerHealth += 1
                     if bullet.rect.y < -5: 
                         AllSettings.bullet_list.remove(bullet)
                         AllSettings.all_sprites_list.remove(bullet)
-
 
                 for bulletback in AllSettings.bulletback_list:
                     now = pygame.time.get_ticks()
@@ -108,7 +111,7 @@ class rungame():
 
 
                 font_obj = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"), 64)
-                textcoin = font_obj.render("+"+str(AllSettings.coins)+"💰", True, AllSettings.Yellow)
+                textcoin = font_obj.render("+"+str(coins.own_coins.amount)+"💰", True, AllSettings.Yellow)
 
                 font_obj2 = pygame.font.Font(os.path.join("data/fonts",'freesansbold.ttf'), 20)
                 Playerhealth = font_obj2.render(AllSettings.Playername, True, AllSettings.Lightgrey)
@@ -144,7 +147,6 @@ class rungame():
                     if AllSettings.login == True:
                         dbcoins = str(AllSettings.collection.find_one({"Name":"Admin"},{ "_id": 0,"Coins": 1}))
                         dbcoins = dbcoins.strip("{'Coins': }")
-                        Coins = int(dbcoins) + AllSettings.coins
                         AllSettings.collection.find_one_and_update({"Name":"Admin"}, {"$set" : {"Coins": Coins}})
                     AllSettings.DISPLAY.blit(AllSettings.background,(0,0))
                     AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_width/2.2,AllSettings.screen_height/2.4))
@@ -158,7 +160,6 @@ class rungame():
                     if AllSettings.login == True:
                         dbcoins = str(AllSettings.collection.find_one({"Name":"Admin"},{ "_id": 0,"Coins": 1}))
                         dbcoins = dbcoins.strip("{'Coins': }")
-                        Coins = int(dbcoins) + AllSettings.coins
                         AllSettings.collection.find_one_and_update({"Name":"Admin"}, {"$set" : {"Coins": Coins}})
                     AllSettings.DISPLAY.blit(AllSettings.background,(0,0))
                     AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_width/2.2,AllSettings.screen_height/2.4))
