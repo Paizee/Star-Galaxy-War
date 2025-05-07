@@ -77,15 +77,11 @@ class rungame():
                 player: Player.Player
                 expl = Animations.Explosion(player.rect.center)
                 all_sprites_list.add(expl)
-                bullet_f_enemy_list.remove(bulletback)
-                all_sprites_list.remove(bulletback)
+                bullet_f_enemy_list.clear()
+                
                 player_list.remove(player)
                 all_sprites_list.remove(player)
-                
-                if bulletback.rect.y > AllSettings.screen_height:
-                    bullet_f_enemy_list.remove(bulletback)
-                    all_sprites_list.remove(bulletback)
-                    
+
             def check_for_hit_at_player(bullet: pygame.sprite.Sprite):
                 player: Player.Player
                 for player in pygame.sprite.spritecollide(bullet, player_list,dokill=False):
