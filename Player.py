@@ -13,9 +13,8 @@ import Settingwindow
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self,game):
+    def __init__(self,add_bullet,add_sprite):
         super().__init__()
-        global PlayerHealth
 
         self.image = AllSettings.playerimage
         self.rect = self.image.get_rect()
@@ -24,8 +23,10 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = AllSettings.screen_width/2
         self.last = pygame.time.get_ticks()
         self.cooldown = 300
-        self.game = game
-        PlayerHealth = 15
+        self.add_bullet = add_bullet
+        self.add_sprite = add_sprite
+        self.health = 15
+
     def update(self):
         global playerx,playery
 
@@ -57,11 +58,11 @@ class Player(pygame.sprite.Sprite):
             self.rect.left = 0
 
     def shoot(self):
-        bullet = Bullet()
-        AllSettings.all_sprites_list.add(bullet)
-        AllSettings.bullet_list.add(bullet)
+        bullet = Bullet_Laser()
+        self.add_sprite(bullet)
+        self.add_bullet(bullet)
     
-    def DrawBar(pos2, size2, borderC2, barC2, progress2):
+    def DrawHealthBar(pos2, size2, borderC2, barC2, progress2):
         pygame.draw.rect(AllSettings.DISPLAY, borderC2, (*pos2, *size2), 1)
         innerPos  = (pos2[0]+3, pos2[1]+3)
         innerSize = ((size2[0]-6) * progress2, size2[1]-6)
@@ -69,7 +70,7 @@ class Player(pygame.sprite.Sprite):
 
 
 
-class Bullet(pygame.sprite.Sprite):
+class Bullet_Laser(pygame.sprite.Sprite):
 
     def __init__(self):
         super().__init__()

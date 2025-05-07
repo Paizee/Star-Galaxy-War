@@ -12,10 +12,9 @@ import Player
 import Settingwindow
 
 class Enemie(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, add_sprite, add_bullet):
         super().__init__()
-        global tfx,tfy
-        
+        global tfx,tfy  
         self.id = random.randint(0,100)
         self.image = AllSettings.enemieimage
         self.rect = self.image.get_rect()
@@ -27,14 +26,22 @@ class Enemie(pygame.sprite.Sprite):
         self.speedx = random.choice(numsx)
         numsy = [-1,1]
         self.speedy = random.choice(numsy)
-        self.health = 4
+
+        self.health = 3
         self.standard_health = 4
+        self.add_sprite = add_sprite
+        self.add_bullet = add_bullet
+
+        self.bullet_cooldown = 1000
+        self.last_bullet = random.randint(0, 700)
             
-    def shootback():
-        for enemies in AllSettings.enemie_list:
-            bulletback = Bulletback(enemies.rect.center)
-            AllSettings.all_sprites_list.add(bulletback)
-            AllSettings.bulletback_list.add(bulletback)
+    def shootback(self):
+        now = pygame.time.get_ticks()
+        if now - self.last_bullet >= self.bullet_cooldown:
+            bullet = Bullet_Red(self.rect.center) # sprite
+            self.add_sprite(bullet)
+            self.add_bullet(bullet)
+            self.last_bullet = now
 
     def move(self):
         self.rect.x += self.speedx
@@ -51,6 +58,8 @@ class Enemie(pygame.sprite.Sprite):
     def update(self):
         self.move()
         self.DrawHealthBar()
+        self.shootback()
+
 
     def DrawBar(pos, size, borderC, barC, progress):
         pygame.draw.rect(AllSettings.DISPLAY, borderC, (*pos, *size), 1)
@@ -65,7 +74,7 @@ class Enemie(pygame.sprite.Sprite):
 
 
 
-class Bulletback(pygame.sprite.Sprite):
+class Bullet_Red(pygame.sprite.Sprite):
 
     def __init__(self,center):
         super().__init__()

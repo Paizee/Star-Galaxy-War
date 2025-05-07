@@ -115,7 +115,6 @@ max_a2 = 15
 
 Playername = "Player"
 enemiename = "TieFighter"
-PlayerHealth = 15
 Health = 4
 
 clock = pygame.time.Clock()
