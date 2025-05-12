@@ -21,9 +21,10 @@ class rungame():
         self.dur = 60 #bullet
         self.time_left = 10 #time left 
         self.start_it = self.runit()
+        self.is_running = True
 
     def timer(self):
-        while not AllSettings.kill: 
+        while self.is_running: 
             time.sleep(1)
             self.time_left -= 1 
 
@@ -73,11 +74,10 @@ class rungame():
                     if enemy.health == 0:
                         explode_enemy(enemy)
 
-            def explode_player():
-                player: Player.Player
+            def explode_player(player: Player.Player):
                 expl = Animations.Explosion(player.rect.center)
                 all_sprites_list.add(expl)
-                bullet_f_enemy_list.clear()
+                bullet_f_enemy_list.empty()
                 
                 player_list.remove(player)
                 all_sprites_list.remove(player)
@@ -86,13 +86,15 @@ class rungame():
                 player: Player.Player
                 for player in pygame.sprite.spritecollide(bullet, player_list,dokill=False):
                     player.health -= 1
+                    player.DrawHealthBar()
                     bullet_f_enemy_list.remove(bullet)
                     all_sprites_list.remove(bullet)
 
-  
+            def stop_game():
+                self.is_running = False
             
             #init player and add to sprite list to draw him
-            player = Player.Player(add_sprite= add_sprites_to_list,add_bullet= add_bullet_player_to_list)
+            player = Player.Player(add_sprite= add_sprites_to_list, add_bullet= add_bullet_player_to_list, stop_game=stop_game)
             player_list.add(player)
             all_sprites_list.add(player)
             player.rect.x = 200
@@ -106,10 +108,10 @@ class rungame():
 
             
 
-            while not AllSettings.level1run: # while loop for game logic 
+            while self.is_running: # while loop for game logic 
                 for event in pygame.event.get():
                     if event.type==QUIT:
-                        AllSettings.kill = True
+                        self.is_running = False
                         pygame.quit()
                         exit()
                 
@@ -122,7 +124,6 @@ class rungame():
                     check_for_hit_at_enemy(bullet=bullet)
 
                     # if bullet out of playground => remove
-                    print(bullet.rect.y)
                     if bullet.rect.y < -5: 
                         bullet_f_player_list.remove(bullet)
                         all_sprites_list.remove(bullet)
@@ -141,7 +142,7 @@ class rungame():
 
                 # if player is dead => remove all from sprite list
                 if player.health == 0:
-                    explode_player()
+                    explode_player(player)
 
                 # canvas drawing shit
                 font_obj = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"), 64)
@@ -169,14 +170,11 @@ class rungame():
                 AllSettings.DISPLAY.blit(textenemie,(AllSettings.screen_width/1.16, AllSettings.screen_height/1.195))
                 AllSettings.DISPLAY.blit(PlayerName,(AllSettings.screen_width/15, AllSettings.screen_height/1.195))
 
-                barPos= (AllSettings.screen_width/15, AllSettings.screen_height/1.15)
-                Player.Player.DrawHealthBar(barPos, AllSettings.barSize2, AllSettings.borderColor2, AllSettings.barColor2, player.health/AllSettings.max_a2)
-
                 all_sprites_list.draw(AllSettings.DISPLAY)
 
                 # if sprite list not contains player (player is dead)
                 if all_sprites_list.has(player_list) == False:
-                    AllSettings.kill = True
+                    self.is_running = False
                     winmenu = Settingwindow.ButtonwinMenu()
                     if AllSettings.login == True:
                         #dbcoins = str(AllSettings.collection.find_one({"Name":"Admin"},{ "_id": 0,"Coins": 1}))
@@ -189,7 +187,7 @@ class rungame():
                     winmenu.draw()
                 # if sprite lsit not contains enemie (player won)
                 if all_sprites_list.has(enemie_list) == False:
-                    AllSettings.kill = True
+                    self.is_running = False
                     winmenu = Settingwindow.ButtonwinMenu()
                     if AllSettings.login == True:
                         #dbcoins = str(AllSettings.collection.find_one({"Name":"Admin"},{ "_id": 0,"Coins": 1}))

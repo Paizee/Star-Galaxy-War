@@ -12,7 +12,7 @@ pygame.mixer.init()
 screen_height = 720
 screen_width = 1280
 DISPLAY=pygame.display.set_mode((screen_width,screen_height),0,64)
-pygame.display.set_caption("Pilot Galaxy War")
+pygame.display.set_caption("Star Galaxy War")
 logoiconpng = pygame.image.load(os.path.join("data/images","logoicon.png"))
 pygame.display.set_icon(logoiconpng)
 # settings
@@ -27,13 +27,6 @@ Green = (7,149,26)
 Black = (0,0,0)
 
 background = pygame.image.load(os.path.join("data/images","background.png")).convert()
-speedl = 5
-speedr = 5
-speedt = 5
-speedb = 5
-Bullets_vel = 6
-xplayer = 350
-yplayer = 500
 playerimage = pygame.image.load(os.path.join("data/images", "x-wing.png"))
 playerimage = pygame.transform.scale(playerimage,(128,128))
 enemieimage = pygame.image.load(os.path.join("data/images", "tiefighter.png"))
@@ -95,37 +88,15 @@ font_objcoins = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"),
 font_objnotlogged = pygame.font.Font(os.path.join("data/fonts","Rubik-Bold.TTF"), 16)
 
 
-
-
-barPos      = (screen_width/1.16, screen_height/1.15)
-barSize     = (100, 15)
-borderColor = (Lightgrey)
-barColor    = (Red)
-max_a = 4
-
-
-barPos2      = (screen_width/15, screen_height/1.15)
-barSize2     = (100, 15)
-borderColor2 = (Lightgrey)
-barColor2    = (Green)
-max_a2 = 15
-
-
-
-
 Playername = "Player"
 enemiename = "TieFighter"
-Health = 4
 
-clock = pygame.time.Clock()
-bol = False
 Settings = True
 rahmenmenu = False
 Apply = False
 toggofull = False
 start = True
 run = True
-hjah = False
 nameinput = False
 emailinput = False
 passwordinput = False
@@ -150,7 +121,7 @@ startinput3 = False
 breakcontrol = False
 toggofull2 = 0
 closerahmen = 0
-rand = random.randrange(10,17)
+
 
 volume = 100
 musicvolume = 100

@@ -12,10 +12,15 @@ import level1
 import Player
 import Settingwindow
 from threading import Thread
+
 class Menu():
+    def __init__(self):
+        super().__init__()
+        self.is_running = True
+
+
     def Menu(self):
-        if AllSettings.run == False:
-            while True:
+        while self.is_running:
                 for event in pygame.event.get():
                     if event.type==QUIT:
                         pygame.quit()
@@ -29,12 +34,7 @@ class Menu():
                 Menusbutton.draw()
                 Settingsbutton.draw()
                 Continuebutton.draw()
-                pygame.display.flip()
-
-                if AllSettings.run == True:
-                    break
-                if AllSettings.level1run == True:
-                    break
+                pygame.display.flip()  
         
 
     def SettingsMenu(self):
@@ -60,6 +60,7 @@ class Menu():
                     AllSettings.DISPLAY.blit(AllSettings.background, (0, 0))
                     
                     break
+                
     def Soundmenu(self):
         global soundm,breaksound
         if soundm == True:

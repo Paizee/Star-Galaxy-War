@@ -27,13 +27,16 @@ class Enemie(pygame.sprite.Sprite):
         numsy = [-1,1]
         self.speedy = random.choice(numsy)
 
-        self.health = 3
+        self.health = 4
         self.standard_health = 4
         self.add_sprite = add_sprite
         self.add_bullet = add_bullet
 
         self.bullet_cooldown = 1000
-        self.last_bullet = random.randint(0, 700)
+        self.last_bullet = random.randint(0, 1000)
+
+        self.health_bar = Health_Bar(x=self.rect.x,y=self.rect.y,percentage=100)
+        add_sprite(self.health_bar)
             
     def shootback(self):
         now = pygame.time.get_ticks()
@@ -46,31 +49,25 @@ class Enemie(pygame.sprite.Sprite):
     def move(self):
         self.rect.x += self.speedx
         self.rect.y += self.speedy
-        if self.rect.x > AllSettings.screen_width - 90:
+        
+        if self.rect.x > random.randint(0,round(AllSettings.screen_width - 90)):
             self.speedx = -2
         if self.rect.x < 0:
             self.speedx = +2
-        if self.rect.y > AllSettings.screen_height/5:
+        if self.rect.y > random.randint(0,round(AllSettings.screen_height/5)):
             self.speedy = -1
         if self.rect.y < 5:
             self.speedy = +1
 
     def update(self):
         self.move()
-        self.DrawHealthBar()
+        self.UpdateHealthBar()
         self.shootback()
 
-
-    def DrawBar(pos, size, borderC, barC, progress):
-        pygame.draw.rect(AllSettings.DISPLAY, borderC, (*pos, *size), 1)
-        innerPos  = (pos[0]+3, pos[1]+3)
-        innerSize = ((size[0]-6) * progress, size[1]-6)
-        pygame.draw.rect(AllSettings.DISPLAY, barC, (*innerPos, *innerSize))
-
-    def DrawHealthBar(self): 
-        pygame.draw.rect(AllSettings.DISPLAY, AllSettings.Lightgrey, (self.rect.x,self.rect.y, 100, 10),8)
-        pygame.draw.rect(AllSettings.DISPLAY, AllSettings.Green, (self.rect.x,self.rect.y, (self.health / self.standard_health) * 100, 10), 8)
-        pygame.display.update()
+    def UpdateHealthBar(self): 
+        self.health_bar.x = self.rect.x
+        self.health_bar.y = self.rect.y
+        self.health_bar.percentage = (self.health / self.standard_health) * 100
 
 
 
@@ -81,9 +78,32 @@ class Bullet_Red(pygame.sprite.Sprite):
 
         self.image = AllSettings.bulletred
         self.rect = self.image.get_rect(center=center)
-        self.speedy = -5
+        self.speedy = 6
 
     def update(self):
-        self.rect.y -= self.speedy
+        self.rect.y += self.speedy
         if self.rect.y > AllSettings.screen_height:
             self.kill()
+
+
+        
+class Health_Bar(pygame.sprite.Sprite):
+
+    def __init__(self,x,y,percentage):
+        super().__init__()
+
+        self.image = pygame.Surface([100, 8])
+        self.image.fill(AllSettings.Green)
+        self.rect = self.image.get_rect()
+
+        self.x = x
+        self.y = y
+        self.percentage = percentage
+
+    def update(self):
+        self.image = pygame.Surface([100 * (self.percentage / 100), 8])
+        self.image.fill(AllSettings.Green)
+        self.rect = self.image.get_rect()
+
+        self.rect.x = self.x
+        self.rect.y = self.y

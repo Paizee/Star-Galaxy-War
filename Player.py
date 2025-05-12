@@ -13,7 +13,7 @@ import Settingwindow
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self,add_bullet,add_sprite):
+    def __init__(self,add_bullet,add_sprite,stop_game):
         super().__init__()
 
         self.image = AllSettings.playerimage
@@ -25,11 +25,14 @@ class Player(pygame.sprite.Sprite):
         self.cooldown = 300
         self.add_bullet = add_bullet
         self.add_sprite = add_sprite
+        self.stop_game = stop_game
         self.health = 15
+        self.standart_health = 15
 
     def update(self):
-        global playerx,playery
+        self.movement()
 
+    def movement(self):
         keys = pygame.key.get_pressed()
 
         if keys[K_a]: # a key => move left
@@ -44,13 +47,9 @@ class Player(pygame.sprite.Sprite):
                 AllSettings.shot.play()
         if keys[K_ESCAPE]: # escape => stop game and show menu
             AllSettings.run = False
-            AllSettings.kill = True
+            self.stop_game()
             Settingwindow.Menu.Menu(self)
-
-        
-        playerx = self.rect.x
-        playery = self.rect.y
-
+            
         #move player finally
         if self.rect.x > AllSettings.screen_width - 125:
             self.rect.x = AllSettings.screen_width - 125
@@ -58,27 +57,25 @@ class Player(pygame.sprite.Sprite):
             self.rect.left = 0
 
     def shoot(self):
-        bullet = Bullet_Laser()
+        bullet = Bullet_Laser(start_x=self.rect.x, start_y=self.rect.y)
         self.add_sprite(bullet)
         self.add_bullet(bullet)
     
-    def DrawHealthBar(pos2, size2, borderC2, barC2, progress2):
-        pygame.draw.rect(AllSettings.DISPLAY, borderC2, (*pos2, *size2), 1)
-        innerPos  = (pos2[0]+3, pos2[1]+3)
-        innerSize = ((size2[0]-6) * progress2, size2[1]-6)
-        pygame.draw.rect(AllSettings.DISPLAY, barC2, (*innerPos, *innerSize))
-
+    def DrawHealthBar(self):
+        pygame.draw.rect(AllSettings.DISPLAY, (AllSettings.Lightgrey), (AllSettings.screen_width/15, AllSettings.screen_height/1.15, 100, 15), 1)
+        pygame.draw.rect(AllSettings.DISPLAY, (AllSettings.Green), (AllSettings.screen_width/15, AllSettings.screen_height/1.15, (self.health / self.standart_health) * 100  ,12.5))
+        pygame.display.update()
 
 
 class Bullet_Laser(pygame.sprite.Sprite):
 
-    def __init__(self):
+    def __init__(self,start_x,start_y):
         super().__init__()
         self.image = AllSettings.laserbullet
         self.rect = self.image.get_rect()
-        self.speedy = 5
-        self.rect.x = playerx + 40
-        self.rect.y = playery - 25
+        self.speedy = 10
+        self.rect.x = start_x + 40
+        self.rect.y = start_y - 25
 
     def update(self):
         self.rect.y -= self.speedy
