@@ -98,7 +98,8 @@ class Menu():
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.click.play()
-                Settingwindow.Menu.SettingsMenu(self)
+                menu = Settingwindow.Menu()
+                menu.SettingsMenu()
         if self.rect2.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:

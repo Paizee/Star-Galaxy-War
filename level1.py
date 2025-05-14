@@ -15,13 +15,12 @@ import coins
 
 
 class rungame():
+    is_running = True
+    time_left = 10 #time left 
+    
     def __init__(self):
-        self.cooldown0 = 1200 #bullet
-        self.cooldown = 300 #bullet
-        self.dur = 60 #bullet
-        self.time_left = 10 #time left 
         self.start_it = self.runit()
-        self.is_running = True
+        
 
     def timer(self):
         while self.is_running: 

@@ -48,7 +48,8 @@ class Player(pygame.sprite.Sprite):
         if keys[K_ESCAPE]: # escape => stop game and show menu
             AllSettings.run = False
             self.stop_game()
-            Settingwindow.Menu.Menu(self)
+            menu = Settingwindow.Menu()
+            menu.Menu()
             
         #move player finally
         if self.rect.x > AllSettings.screen_width - 125:
