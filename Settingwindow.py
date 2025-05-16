@@ -65,214 +65,89 @@ class Menu():
             pygame.display.flip()
                 
     def Soundmenu(self):
+        volume_bars = []
+        for i in range(round(AllSettings.volume / 10)):
+            volume_bars.append(pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(620 + (35 * i),211,20,40),border_radius=10))
+
+        music_bars = []
+        for i in range(round(AllSettings.musicvolume / 10)):
+            music_bars.append(pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(620 + (35 * i),211,20,40),border_radius=10))
+            
         while (not self.back) and (self.selected_window == Window.Sound):
             for event in pygame.event.get():
                 if event.type==QUIT:
                     pygame.quit()
                     exit()
-            pos = pygame.mouse.get_pos()
-            if not SettingsSound.rect.collidepoint(pos):
-                if not SettingsVideo.rect.collidepoint(pos):
-                    if not SettingsControls.rect.collidepoint(pos):
-                        if not plus2.rect.collidepoint(pos):
-                            if not minus2.rect.collidepoint(pos):
-                                if not minus3.rect.collidepoint(pos):
-                                    pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
+
+            def update_volume():
+                AllSettings.shot.set_volume(AllSettings.volume/100)
+                AllSettings.click.set_volume(AllSettings.volume/100)
+                AllSettings.explosound.set_volume(AllSettings.volume/100)
+
+            def update_music_volume():
+                AllSettings.music.set_volume(AllSettings.musicvolume/100)
+
+
+            def volume_plus(): 
+                if AllSettings.volume < 100:
+                    AllSettings.volume += 10
+                    volume_bars.append(pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(620 + (35 * len(volume_bars) - 1),211,20,40),border_radius=10))
+                    update_volume()
+
+            volume_plus_button = Volume_Plus(function=volume_plus)
+            volume_plus_button.draw()
+
+
+            def volume_minus(): 
+                if AllSettings.volume > 0:
+                    AllSettings.volume -= 10
+                    AllSettings.DISPLAY.fill(AllSettings.Black,rect=volume_bars[len(volume_bars) - 1])
+                    update_volume()
+
+            volume_minus_button = Volume_Minus(function=volume_minus)
+            volume_minus_button.draw()
+
+
+            def music_volume_plus(): 
+                if AllSettings.musicvolume < 100:
+                    AllSettings.musicvolume += 10
+                    music_bars.append(pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(620 + (35 * len(music_bars) - 1),211,20,40),border_radius=10))
+                    update_music_volume()
+
+            music_volume_plus_button = Volume_Plus(function=music_volume_plus)
+            music_volume_plus_button.draw()
+
+
+            def music_volume_minus(): 
+                if AllSettings.musicvolume > 0:
+                    AllSettings.musicvolume -= 10
+                    AllSettings.DISPLAY.fill(AllSettings.Black,rect=music_bars[len(music_bars) - 1])
+                    update_music_volume()
+
+            music_volume_minus_button = Volume_Minus(function=music_volume_minus)
+            music_volume_minus_button.draw()
+
+
+            volume_icon = Volume()
+            volume_icon.draw()
+            music_icon = Music_Volume()
+            music_icon.draw()
+
             Settingmenu.draw()
             SettingsSound.draw()
             SettingsVideo.draw()
             SettingsControls.draw()
-            plus2.draw()
-            minus2.draw()
-            plus3.draw()
-            minus3.draw()
-            Volumepng.draw()
-            Musicpng.draw()
-
-            s1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(620,211,20,40),border_radius=10)
-            s2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(655,211,20,40),border_radius=10)
-            s3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(690,211,20,40),border_radius=10)
-            s4 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(725,211,20,40),border_radius=10)
-            s5 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(760,211,20,40),border_radius=10)
-            s6 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(795,211,20,40),border_radius=10)
-            s7 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(830,211,20,40),border_radius=10)
-            s8 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(865,211,20,40),border_radius=10)
-            s9 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(900,211,20,40),border_radius=10)
-            s10 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(935,211,20,40),border_radius=10)
-
-            m1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(620,295,20,40),border_radius=10)
-            m2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(655,295,20,40),border_radius=10)
-            m3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(690,295,20,40),border_radius=10)
-            m4 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(725,295,20,40),border_radius=10)
-            m5 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(760,295,20,40),border_radius=10)
-            m6 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(795,295,20,40),border_radius=10)
-            m7 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(830,295,20,40),border_radius=10)
-            m8 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(865,295,20,40),border_radius=10)
-            m9 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(900,295,20,40),border_radius=10)
-            m10 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(935,295,20,40),border_radius=10)
-
-            if AllSettings.volume == 0:
-                s10 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(620,211,20,40),border_radius=10)
-                s9 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(655,211,20,40),border_radius=10)
-                s8 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(690,211,20,40),border_radius=10)
-                s7 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(725,211,20,40),border_radius=10)
-                s6 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(760,211,20,40),border_radius=10)
-                s5 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,211,20,40),border_radius=10)
-                s4 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(830,211,20,40),border_radius=10)
-                s3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,211,20,40),border_radius=10)
-                s2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,211,20,40),border_radius=10)
-                s1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,211,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,260,60,25)) 
-            if AllSettings.volume == 10:
-                s9 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(655,211,20,40),border_radius=10)
-                s8 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(690,211,20,40),border_radius=10)
-                s7 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(725,211,20,40),border_radius=10)
-                s6 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(760,211,20,40),border_radius=10)
-                s5 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,211,20,40),border_radius=10)
-                s4 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(830,211,20,40),border_radius=10)
-                s3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,211,20,40),border_radius=10)
-                s2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,211,20,40),border_radius=10)
-                s1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,211,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,260,60,25))                  
-            if AllSettings.volume == 20:
-                s8 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(690,211,20,40),border_radius=10)
-                s7 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(725,211,20,40),border_radius=10)
-                s6 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(760,211,20,40),border_radius=10)
-                s5 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,211,20,40),border_radius=10)
-                s4 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(830,211,20,40),border_radius=10)
-                s3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,211,20,40),border_radius=10)
-                s2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,211,20,40),border_radius=10)
-                s1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,211,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,260,60,25))  
-            if AllSettings.volume == 30:
-                s7 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(725,211,20,40),border_radius=10)
-                s6 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(760,211,20,40),border_radius=10)
-                s5 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,211,20,40),border_radius=10)
-                s4 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(830,211,20,40),border_radius=10)
-                s3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,211,20,40),border_radius=10)
-                s2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,211,20,40),border_radius=10)
-                s1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,211,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,260,60,25))     
-            if AllSettings.volume == 40:
-                s6 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(760,211,20,40),border_radius=10)
-                s5 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,211,20,40),border_radius=10)
-                s4 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(830,211,20,40),border_radius=10)
-                s3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,211,20,40),border_radius=10)
-                s2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,211,20,40),border_radius=10)
-                s1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,211,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,260,60,25))
-            if AllSettings.volume == 50:
-                s5 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,211,20,40),border_radius=10)
-                s4 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(830,211,20,40),border_radius=10)
-                s3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,211,20,40),border_radius=10)
-                s2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,211,20,40),border_radius=10)
-                s1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,211,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,260,60,25))
-            if AllSettings.volume == 60:
-                s4 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(830,211,20,40),border_radius=10)
-                s3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,211,20,40),border_radius=10)
-                s2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,211,20,40),border_radius=10)
-                s1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,211,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,260,60,25)) 
-            if AllSettings.volume == 70:
-                s3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,211,20,40),border_radius=10)
-                s2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,211,20,40),border_radius=10)
-                s1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,211,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,260,60,25))    
-            if AllSettings.volume == 80:
-                s2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,211,20,40),border_radius=10)
-                s1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,211,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,260,60,25))
-            if AllSettings.volume == 90:
-                s1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,211,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,260,60,25))
-            if AllSettings.volume == 100:
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,260,60,25))
 
 
-            AllSettings.shot.set_volume(AllSettings.volume/100)
-            AllSettings.click.set_volume(AllSettings.volume/100)
-            AllSettings.explosound.set_volume(AllSettings.volume/100)
-            AllSettings.music.set_volume(AllSettings.musicvolume/100)
-
-            if AllSettings.musicvolume == 0:
-                m10 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(620,295,20,40),border_radius=10)
-                m9 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(655,295,20,40),border_radius=10)
-                m8 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(690,295,20,40),border_radius=10)
-                m7 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(725,295,20,40),border_radius=10)
-                m6 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(760,295,20,40),border_radius=10)
-                m5 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,295,20,40),border_radius=10)
-                m4 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(830,295,20,40),border_radius=10)
-                m3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,295,20,40),border_radius=10)
-                m2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,295,20,40),border_radius=10)
-                m1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,295,20,40),border_radius=10)
-                AllSettings.music.stop()
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,340,60,25)) 
-            if AllSettings.musicvolume == 10:
-                m9 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(655,295,20,40),border_radius=10)
-                m8 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(690,295,20,40),border_radius=10)
-                m7 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(725,295,20,40),border_radius=10)
-                m6 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(760,295,20,40),border_radius=10)
-                m5 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,295,20,40),border_radius=10)
-                m4 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(830,295,20,40),border_radius=10)
-                m3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,295,20,40),border_radius=10)
-                m2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,295,20,40),border_radius=10)
-                m1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,295,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,340,60,25))                  
-            if AllSettings.musicvolume == 20:
-                m8 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(690,295,20,40),border_radius=10)
-                m7 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(725,295,20,40),border_radius=10)
-                m6 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(760,295,20,40),border_radius=10)
-                m5 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,295,20,40),border_radius=10)
-                m4 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(830,295,20,40),border_radius=10)
-                m3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,295,20,40),border_radius=10)
-                m2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,295,20,40),border_radius=10)
-                m1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,295,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,340,60,25))  
-            if AllSettings.musicvolume == 30:
-                m7 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(725,295,20,40),border_radius=10)
-                m6 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(760,295,20,40),border_radius=10)
-                m5 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,295,20,40),border_radius=10)
-                m4 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(830,295,20,40),border_radius=10)
-                m3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,295,20,40),border_radius=10)
-                m2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,295,20,40),border_radius=10)
-                m1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,295,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,340,60,25))     
-            if AllSettings.musicvolume == 40:
-                m6 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(760,295,20,40),border_radius=10)
-                m5 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,295,20,40),border_radius=10)
-                m4 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(830,295,20,40),border_radius=10)
-                m3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,295,20,40),border_radius=10)
-                m2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,295,20,40),border_radius=10)
-                m1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,295,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,340,60,25))
-            if AllSettings.musicvolume == 50:
-                m5 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,295,20,40),border_radius=10)
-                m4 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(830,295,20,40),border_radius=10)
-                m3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,295,20,40),border_radius=10)
-                m2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,295,20,40),border_radius=10)
-                m1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,295,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,340,60,25))
-            if AllSettings.musicvolume == 60:
-                m4 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(830,295,20,40),border_radius=10)
-                m3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,295,20,40),border_radius=10)
-                m2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,295,20,40),border_radius=10)
-                m1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,295,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,340,60,25)) 
-            if AllSettings.musicvolume == 70:
-                m3 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(865,295,20,40),border_radius=10)
-                m2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,295,20,40),border_radius=10)
-                m1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,295,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,340,60,25))    
-            if AllSettings.musicvolume == 80:
-                m2 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(900,295,20,40),border_radius=10)
-                m1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,295,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,340,60,25))
-            if AllSettings.musicvolume == 90:
-                m1 = pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(935,295,20,40),border_radius=10)
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,340,60,25))
-            if AllSettings.musicvolume == 100:
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(795,340,60,25))
+            pos = pygame.mouse.get_pos()
+            if not SettingsSound.rect.collidepoint(pos):
+                if not SettingsVideo.rect.collidepoint(pos):
+                    if not SettingsControls.rect.collidepoint(pos):
+                        if not volume_plus_button.rect.collidepoint(pos):
+                            if not volume_minus_button.rect.collidepoint(pos):
+                                if not music_volume_plus_button.rect.collidepoint(pos):
+                                    if not music_volume_minus_button.rect.collidepoint(pos):
+                                        pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
 
 
             font_obj2 = pygame.font.Font(os.path.join("data/fonts",'freesansbold.ttf'), 20)
@@ -629,14 +504,17 @@ class Volume():
         self.rect.y = 204
     def draw(self):
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
-class Plus():
-    def __init__(self):
+
+class Volume_Plus():
+    def __init__(self,function):
         self.image = AllSettings.plus
         self.rect = self.image.get_rect()
         self.rect.x = 975
         self.rect.y = 211
         self.cooldown = 300
         self.last = pygame.time.get_ticks()
+        self.function = function
+
     def draw(self):
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
@@ -649,17 +527,18 @@ class Plus():
                 if now - self.last >= self.cooldown:
                     self.last = now
                     AllSettings.click.play()
-                    AllSettings.volume += 10
-                    if AllSettings.volume > 100:
-                        AllSettings.volume = 100
-class Minus():
-    def __init__(self):
+                    self.function()
+
+class Volume_Minus():
+    def __init__(self,function):
         self.image = AllSettings.minus
         self.rect = self.image.get_rect()
         self.rect.x = 550
         self.rect.y = 211
         self.cooldown = 300
         self.last = pygame.time.get_ticks()
+        self.function = function
+
     def draw(self):
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
@@ -672,64 +551,18 @@ class Minus():
                 if now - self.last >= self.cooldown:
                     self.last = now
                     AllSettings.click.play()
-                    AllSettings.volume -= 10
-                    if AllSettings.volume < 0:
-                        AllSettings.volume = 0
-class Volume1():
+                    self.function()
+
+class Music_Volume():
     def __init__(self):
         self.image = AllSettings.musicpng
         self.rect = self.image.get_rect()
         self.rect.x = 181
         self.rect.y = 295
+
     def draw(self):
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
-class Plus1():
-    def __init__(self):
-        self.image = AllSettings.plus
-        self.rect = self.image.get_rect()
-        self.rect.x = 975
-        self.rect.y = 295
-        self.cooldown = 300
-        self.last = pygame.time.get_ticks()
-    def draw(self):
-        pos = pygame.mouse.get_pos()
-        AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
-
-        if self.rect.collidepoint(pos):
-            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
-            if pygame.mouse.get_pressed()[0] == 1:
-                now = pygame.time.get_ticks()
-                if now - self.last >= self.cooldown:
-                    self.last = now
-                    AllSettings.click.play()
-                    AllSettings.musicvolume += 10
-                    if AllSettings.musicvolume > 100:
-                        AllSettings.musicvolume = 100
-class Minus1():
-    def __init__(self):
-        self.image = AllSettings.minus
-        self.rect = self.image.get_rect()
-        self.rect.x = 550
-        self.rect.y = 295
-        self.cooldown = 300
-        self.last = pygame.time.get_ticks()
-    def draw(self):
-        pos = pygame.mouse.get_pos()
-        pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
-        AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
-
-
-        if self.rect.collidepoint(pos):
-            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
-            if pygame.mouse.get_pressed()[0] == 1:
-                now = pygame.time.get_ticks()
-                if now - self.last >= self.cooldown:
-                    self.last = now
-                    AllSettings.click.play()
-                    AllSettings.musicvolume -= 10
-                    if AllSettings.musicvolume < 0:
-                        AllSettings.musicvolume = 0
 class Resolution():
     def __init__(self):
         self.image = AllSettings.reso
@@ -996,12 +829,7 @@ SettingsSound = SoundSettings()
 SettingsVideo = VideoSettings()
 SettingsControls = ControlsSettings()
 SettingsBack = backSettingsMenu()
-Volumepng = Volume()
-Musicpng = Volume1()
-minus2 = Minus()
-plus2 = Plus()
-minus3 = Minus1()
-plus3 = Plus1()
+
 resolution = Resolution()
 dropdownmenu = dropdown()
 Dropdownrahmen = dropdownrahmen()
