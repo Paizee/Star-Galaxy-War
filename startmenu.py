@@ -59,16 +59,19 @@ class Menu():
         self.cooldown = 300
         self.isrunning = True
         
-        self.player = Player.Player(add_bullet=None,add_sprite=None,stop_game=None)
+        self.player = Player.Player()
 
     def drawcoinsunlogged(self):
-        textcoin = AllSettings.font_objcoins.render(str(self.player.coins)+"💰", True, AllSettings.Yellow)
-        infonotlogged = AllSettings.font_objnotlogged.render("You're not logged in, the coins are not save!",True,(255,0,0))
+        font_objcoins = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"), 64)
+        font_objnotlogged = pygame.font.Font(os.path.join("data/fonts","Rubik-Bold.TTF"), 16)
+        textcoin = font_objcoins.render(str(self.player.coins)+"💰", True, AllSettings.Yellow)
+        infonotlogged = font_objnotlogged.render("You're not logged in, the coins are not save!",True,(255,0,0))
         AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_width/1.2,AllSettings.screen_height/1.2))
         AllSettings.DISPLAY.blit(infonotlogged,(AllSettings.screen_width/1.5,AllSettings.screen_height/1.05))
         
     def drawcoinsloggedin(self):
-        textcoin = AllSettings.font_objcoins.render(str(self.player.coins)+"💰", True, AllSettings.Yellow)
+        font_objcoins = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"), 64)
+        textcoin = font_objcoins.render(str(self.player.coins)+"💰", True, AllSettings.Yellow)
         AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_width/1.2,AllSettings.screen_height/1.2))
 
     def drawUserunlogged(self):
@@ -100,21 +103,21 @@ class Menu():
                                         pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
 
                 
-        
+        # start game
         if self.rect1.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.click.play()
-                game = level1.game()
+                game = level1.game(player=self.player)
                 thread_lev1 = Thread(target=game.runit())
                 thread_lev1.start()
-                
+        # quit        
         if self.rect2.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.click.play()
                 pygame.quit()
-                
+        # menu         
         if self.rect3.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
@@ -122,7 +125,7 @@ class Menu():
                 menu = Settingwindow.Menu(player=self.player)
                 thread_menu = Thread(target=menu.SettingsMenu())
                 thread_menu.start()
-                
+         #leaderboard       
         if self.rect4.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
@@ -189,17 +192,17 @@ class Menu():
                     pygame.quit()
                     exit() 
                     
-            if AllSettings.login == True:
-
-                if AllSettings.Usershow == True:
+            if AllSettings.login:
+                if AllSettings.Usershow:
                     menu.draw()
                     menu.drawUserloggedin()
                     menu.drawcoinsloggedin()
                 else:
                     menu.draw()
                     menu.drawcoinsloggedin()
-            if AllSettings.login == False:
-                if AllSettings.Usershow == True:
+                    
+            if not AllSettings.login:
+                if AllSettings.Usershow:
                     menu.draw()
                     menu.drawUserunlogged()
                     menu.drawcoinsunlogged()

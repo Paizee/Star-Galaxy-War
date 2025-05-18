@@ -42,9 +42,9 @@ class Menu():
                     if not Continuebutton.rect.collidepoint(pos):
                         pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
 
-            Menusbutton.draw()
-            Settingsbutton.draw(menu=self)
-            Continuebutton.draw()
+            Menusbutton.draw(menu = self)
+            Settingsbutton.draw(menu = self)
+            Continuebutton.draw(menu = self)
             pygame.display.update()  
         
     def SettingsMenu(self):
@@ -328,16 +328,16 @@ class ButtonMenu():
         self.rect.x = AllSettings.screen_width/3
         self.rect.y = AllSettings.screen_height/4.5
 
-    def draw(self):
+    def draw(self,menu: Menu):
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
         pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.click.play()
-                #AllSettings.zeit = 10 time left
-                AllSettings.kill = True
-                AllSettings.level1run = True
+                menu.player.stop_game()
+                menu.player.stop_game()
+                menu.is_running = False
                 
 
             
@@ -367,7 +367,7 @@ class ButtonContinue():
         self.rect.x = AllSettings.screen_width/3
         self.rect.y = AllSettings.screen_height/1.7
 
-    def draw(self):
+    def draw(self,menu: Menu):
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
@@ -376,10 +376,8 @@ class ButtonContinue():
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.click.play()
-                AllSettings.run = True
-                AllSettings.kill = False
-                thread_timer = Thread(target=level1.game.timer)
-                thread_timer.start()
+                menu.player.resume_game()
+                menu.is_running = False
 
 class SettingsMenuBackground():
     def __init__(self):

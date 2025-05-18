@@ -85,8 +85,6 @@ logoutimagepng = pygame.image.load(os.path.join("data/images","Logout.png"))
 shiptostart = pygame.image.load(os.path.join("data/images","ship.png"))
 Playtostart = pygame.image.load(os.path.join("data/images","Play.png"))
 click = pygame.mixer.Sound(os.path.join("data/sounds","click.wav"))
-font_objcoins = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"), 64)
-font_objnotlogged = pygame.font.Font(os.path.join("data/fonts","Rubik-Bold.TTF"), 16)
 
 run = True
 nameinput = False

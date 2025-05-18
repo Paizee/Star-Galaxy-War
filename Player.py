@@ -13,7 +13,7 @@ import Settingwindow
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self,add_bullet,add_sprite,stop_game):
+    def __init__(self):
         super().__init__()
 
         self.image = AllSettings.playerimage
@@ -23,9 +23,10 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = AllSettings.screen_width/2
         self.last = pygame.time.get_ticks()
         self.cooldown = 300
-        self.add_bullet = add_bullet
-        self.add_sprite = add_sprite
-        self.stop_game = stop_game
+        self.add_bullet = None
+        self.add_sprite = None
+        self.stop_game = None
+        self.resume_game = None
         self.health = 15
         self.standart_health = 15
         self.coins = 0
@@ -40,8 +41,6 @@ class Player(pygame.sprite.Sprite):
         self.music_volume = 100
         #video
         self.fullscreen = False
-        
-        
     
     def add_coins(self,amount):
         self.coins += amount

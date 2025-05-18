@@ -14,17 +14,17 @@ from threading import Thread
 
 
 class game():
-    is_running = True
-    time_left = 10 #time left 
+    def __init__(self,player: Player.Player):
+        self.is_running = True
+        self.time_left = 10 #time left 
+        self.player = player
+        self.coins_earned = 0
     
-    def __init__(self):
-        self.start_it = self.runit()
-        
-
     def timer(self):
         while self.is_running: 
             time.sleep(1)
             self.time_left -= 1 
+            
 
     def runit(self):
             AllSettings.music.stop()
@@ -33,9 +33,7 @@ class game():
             thread_timer.start()
 
             all_sprites_list = pygame.sprite.Group()
-            explosion_list = pygame.sprite.Group()
             enemie_list = pygame.sprite.Group()
-            enemie_list2 = pygame.sprite.Group()
             bullet_f_player_list = pygame.sprite.Group()
             bullet_f_enemy_list = pygame.sprite.Group()
             player_list = pygame.sprite.GroupSingle()
@@ -54,10 +52,11 @@ class game():
                 enemy.kill_healthbar()
                 enemy.kill()
                 add_sprites_to_list(expl)
-                player.add_coins(5)
+                self.player.add_coins(5)
+                self.coins_earned += 5
                 self.time_left += 5
-                if player.health <= 15:
-                    player.health += 1
+                if self.player.health <= 15:
+                    self.player.health += 1
 
             def check_for_hit_at_enemy(bullet: pygame.sprite.Sprite):
                 enemy: Enemy.Enemie
@@ -85,12 +84,19 @@ class game():
 
             def stop_game():
                 self.is_running = False
+                
+            def resume_game():
+                self.is_running = True
             
             #init player and add to sprite list to draw him
-            player = Player.Player(add_sprite= add_sprites_to_list, add_bullet= add_bullet_player_to_list, stop_game=stop_game)
-            player_list.add(player)
-            all_sprites_list.add(player)
-            player.rect.x = 200
+            self.player.add_sprite = add_sprites_to_list
+            self.player.add_bullet= add_bullet_player_to_list
+            self.player.stop_game= stop_game
+            self.player.resume_game= resume_game
+            
+            player_list.add(self.player)
+            all_sprites_list.add(self.player)
+            self.player.rect.x = 200
 
             #spawn enemies
             for i in range(10):
@@ -131,18 +137,18 @@ class game():
 
                 # if time is over player dies            
                 if self.time_left <= 0:
-                    player.health = 0
+                    self.player.health = 0
 
                 # if player is dead => remove all from sprite list
-                if player.health == 0:
-                    explode_player(player)
+                if self.player.health == 0:
+                    explode_player(self.player)
 
                 # canvas drawing shit
                 font_obj = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"), 64)
-                textcoin = font_obj.render("+"+str(player.coins)+"💰", True, AllSettings.Yellow)
+                textcoin = font_obj.render("+"+str(self.player.coins)+"💰", True, AllSettings.Yellow)
 
                 font_obj2 = pygame.font.Font(os.path.join("data/fonts",'freesansbold.ttf'), 20)
-                PlayerName = font_obj2.render(player.name, True, AllSettings.Lightgrey)
+                PlayerName = font_obj2.render(self.player.name, True, AllSettings.Lightgrey)
 
                 font_obj1 = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 64)
                 won = font_obj1.render("Congrats you won!", True, AllSettings.Yellow)
@@ -160,14 +166,14 @@ class game():
                 AllSettings.DISPLAY.blit(PlayerName,(AllSettings.screen_width/15, AllSettings.screen_height/1.195))
 
                 all_sprites_list.draw(AllSettings.DISPLAY)
-                player.DrawHealthBar()
+                self.player.DrawHealthBar()
                 
                 # if sprite list not contains player (player is dead)
                 if not all_sprites_list.has(player_list) or not all_sprites_list.has(enemie_list): 
                     self.is_running = False
-                    end_screen = End_Screen(coins=player.coins,won=all_sprites_list.has(player_list))
-                    thread_lev1 = Thread(target=end_screen.show())
-                    thread_lev1.start()
+                    end_screen = End_Screen(coins=self.coins_earned,won=all_sprites_list.has(player_list))
+                    thread_end_screen = Thread(target=end_screen.show())
+                    thread_end_screen.start()
                     
 
                 pygame.display.update()

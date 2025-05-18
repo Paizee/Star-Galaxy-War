@@ -45,7 +45,6 @@ class Login():
                 if not self.rect5.collidepoint(pos):
                     if not self.rect6.collidepoint(pos):
                         pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
-                      
 
         if self.rect2.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
