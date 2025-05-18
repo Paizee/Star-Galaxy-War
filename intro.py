@@ -51,7 +51,8 @@ class Play():
                 self.rect2.x -= self.speed *2
             if self.rect2.x < -500:
                 import startmenu
-                startmenu.Menu.run()
+                menu = startmenu.Menu()
+                menu.run()
             
 
 

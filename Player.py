@@ -28,27 +28,36 @@ class Player(pygame.sprite.Sprite):
         self.stop_game = stop_game
         self.health = 15
         self.standart_health = 15
-
+        #keys
+        self.move_left_key = K_a
+        self.move_right_key = K_d
+        self.shoot_key = K_SPACE
+        self.settings_key = K_ESCAPE
+        #sound
+        self.volume = 100
+        self.music_volume = 100
+        
+        
     def update(self):
         self.movement()
 
     def movement(self):
         keys = pygame.key.get_pressed()
 
-        if keys[K_a]: # a key => move left
+        if keys[self.move_left_key]: # a key => move left
             self.rect.x  -=7
-        elif keys[K_d]: # d key => move right
+        elif keys[self.move_right_key]: # d key => move right
             self.rect.x  +=7
-        if keys[K_SPACE]: # spacebar => shoot if cooldown allows
+        if keys[self.shoot_key]: # spacebar => shoot if cooldown allows
             now = pygame.time.get_ticks()
             if now - self.last >= self.cooldown:
                 self.last = now
                 Player.shoot(self)
                 AllSettings.shot.play()
-        if keys[K_ESCAPE]: # escape => stop game and show menu
+        if keys[self.settings_key]: # escape => stop game and show menu
             AllSettings.run = False
             self.stop_game()
-            menu = Settingwindow.Menu()
+            menu = Settingwindow.Menu(player=self)
             menu.Menu()
             
         #move player finally

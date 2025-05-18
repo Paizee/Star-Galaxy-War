@@ -58,6 +58,9 @@ class Menu():
         self.rect8.y = AllSettings.screen_height/3.353
         self.last = pygame.time.get_ticks()
         self.cooldown = 300
+        self.isrunning = True
+        
+        self.player = Player.Player(add_bullet=None,add_sprite=None,stop_game=None)
 
     def drawcoinsunlogged(self):
         textcoin = AllSettings.font_objcoins.render(str(coins.own_coins.amount)+"💰", True, AllSettings.Yellow)
@@ -75,8 +78,9 @@ class Menu():
 
     def drawUserloggedin(self):
         AllSettings.DISPLAY.blit(self.logoutimagepng,(self.rect8.x,self.rect8.y))
-
+        
     def draw(self):
+        
         AllSettings.music.play()
         AllSettings.DISPLAY.blit(background, (0, 0))
         AllSettings.DISPLAY.blit(self.Play_image,(self.rect1.x,self.rect1.y))
@@ -85,6 +89,7 @@ class Menu():
         AllSettings.DISPLAY.blit(self.Leaderboard_image,(self.rect4.x,self.rect4.y))
         AllSettings.DISPLAY.blit(self.user_image,(self.rect5.x,self.rect5.y))
         pos = pygame.mouse.get_pos()
+        
         if not self.rect1.collidepoint(pos):
             if not self.rect2.collidepoint(pos):
                 if not self.rect3.collidepoint(pos):
@@ -94,17 +99,9 @@ class Menu():
                                 if not self.rect7.collidepoint(pos):
                                     if not self.rect8.collidepoint(pos):
                                         pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
-        if self.rect3.collidepoint(pos):
-            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
-            if pygame.mouse.get_pressed()[0] == 1:
-                AllSettings.click.play()
-                menu = Settingwindow.Menu()
-                menu.SettingsMenu()
-        if self.rect2.collidepoint(pos):
-            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
-            if pygame.mouse.get_pressed()[0] == 1:
-                AllSettings.click.play()
-                pygame.quit()
+
+                
+        
         if self.rect1.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
@@ -112,6 +109,21 @@ class Menu():
                 game = level1.rungame()
                 thread_lev1 = Thread(target=game.start_it())
                 thread_lev1.start()
+                
+        if self.rect2.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
+            if pygame.mouse.get_pressed()[0] == 1:
+                AllSettings.click.play()
+                pygame.quit()
+                
+        if self.rect3.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
+            if pygame.mouse.get_pressed()[0] == 1:
+                AllSettings.click.play()
+                menu = Settingwindow.Menu(player=self.player)
+                thread_menu = Thread(target=menu.SettingsMenu())
+                thread_menu.start()
+                
         if self.rect4.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
@@ -120,6 +132,7 @@ class Menu():
                 thread_lead = Thread(target=Leaderboard.Leaderboard.runit(self))
                 AllSettings.Leader = False
                 thread_lead.start()
+                
         if self.rect5.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
@@ -132,6 +145,7 @@ class Menu():
                     if AllSettings.Userclicked > 1:
                         AllSettings.Usershow = False
                         AllSettings.Userclicked = 0
+                        
         if self.rect7.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
@@ -146,6 +160,7 @@ class Menu():
                     thread_reg = Thread(target=Register.Register.runit())
                     AllSettings.reg = False
                     thread_reg.start()
+                    
         if self.rect6.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
@@ -166,13 +181,15 @@ class Menu():
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.click.play()
                 AllSettings.login = False
-    def run():   
+                
+    def run(self):   
         menu = Menu()
-        while True:
+        while self.isrunning:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
                     exit() 
+                    
             if AllSettings.login == True:
 
                 if AllSettings.Usershow == True:

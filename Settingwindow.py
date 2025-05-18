@@ -20,13 +20,14 @@ class Window(Enum):
     Control = "Control"
 
 class Menu():
-    def __init__(self):
+    def __init__(self,player: Player.Player):
         super().__init__()
         self.is_running = True
         self.selected_window = Window.Sound,
-        self.settings_menu_selected = False
+        self.settings_menu_selected = True
         self.back = False
         self.start_input = False
+        self.player = player
 
     def Menu(self):
         while self.is_running:
@@ -43,7 +44,7 @@ class Menu():
             Menusbutton.draw()
             Settingsbutton.draw()
             Continuebutton.draw()
-            pygame.display.flip()  
+            pygame.display.update()  
         
     def SettingsMenu(self):
         while (not self.back) and self.settings_menu_selected: 
@@ -51,112 +52,130 @@ class Menu():
                 if event.type==QUIT:
                     pygame.quit()
                     exit()
+                    
             pos = pygame.mouse.get_pos()
             if not SettingsSound.rect.collidepoint(pos):
                 if not SettingsVideo.rect.collidepoint(pos):
                     if not SettingsControls.rect.collidepoint(pos):
                         if not SettingsBack.rect.collidepoint(pos):
                             pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
+                            
             Settingmenu.draw()
-            SettingsSound.draw()
-            SettingsVideo.draw()
-            SettingsControls.draw()
-            SettingsBack.draw()
-            pygame.display.flip()
+            SettingsSound.draw(menu=self)
+            SettingsVideo.draw(menu=self)
+            SettingsControls.draw(menu=self)
+            SettingsBack.draw(menu=self)
+            pygame.display.update()
                 
     def Soundmenu(self):
         volume_bars = []
-        for i in range(round(AllSettings.volume / 10)):
+        Settingmenu.draw() 
+        for i in range(round(self.player.volume / 10)):
             volume_bars.append(pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(620 + (35 * i),211,20,40),border_radius=10))
 
         music_bars = []
-        for i in range(round(AllSettings.musicvolume / 10)):
-            music_bars.append(pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(620 + (35 * i),211,20,40),border_radius=10))
-            
+        for i in range(round(self.player.music_volume / 10)):
+            music_bars.append(pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(620 + (35 * i),295,20,40),border_radius=10))
+             
+        def update_volume():
+            AllSettings.shot.set_volume(self.player.volume/100)
+            AllSettings.click.set_volume(self.player.volume/100)
+            AllSettings.explosound.set_volume(self.player.volume/100)
+
+        def update_music_volume():
+            AllSettings.music.set_volume(self.player.music_volume/100)
+
+
+        def volume_plus(): 
+            if self.player.volume < 100:
+                self.player.volume += 10
+                volume_bars.append(pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(620 + (35 * len(volume_bars) - 1),211,20,40),border_radius=10))
+                update_volume()
+
+        volume_plus_button = Volume_Plus(function=volume_plus,x=975,y=211)
+
+
+        def volume_minus(): 
+            if self.player.volume > 0:
+                self.player.volume -= 10
+                print(self.player.volume)
+                AllSettings.DISPLAY.fill(AllSettings.Black,rect=volume_bars[len(volume_bars) - 1])
+                volume_bars.remove(volume_bars[len(volume_bars) - 1])
+                update_volume()
+        
+        volume_minus_button = Volume_Minus(function=volume_minus,x=550,y=211)
+
+
+        def music_volume_plus(): 
+            if self.player.music_volume < 100:
+                self.player.music_volume += 10
+                music_bars.append(pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(620 + (35 * len(music_bars) - 1),295,20,40),border_radius=10))
+                update_music_volume()
+
+        music_volume_plus_button = Volume_Plus(function=music_volume_plus,x=975,y=295)
+        
+
+        def music_volume_minus(): 
+            if self.player.music_volume > 0:
+                self.player.music_volume -= 10
+                AllSettings.DISPLAY.fill(AllSettings.Black,rect=music_bars[len(music_bars) - 1])
+                music_bars.remove(music_bars[len(music_bars) - 1])
+                update_music_volume()
+
+        music_volume_minus_button = Volume_Minus(function=music_volume_minus,x=550,y=295)
+
+
+        volume_icon = Volume()
+        music_icon = Music_Volume()
+        
+        volume_icon.draw()
+        music_icon.draw()
+        
+        old_volume_rect = None
+        old_music_volume_rect = None
+        
         while (not self.back) and (self.selected_window == Window.Sound):
             for event in pygame.event.get():
                 if event.type==QUIT:
                     pygame.quit()
                     exit()
 
-            def update_volume():
-                AllSettings.shot.set_volume(AllSettings.volume/100)
-                AllSettings.click.set_volume(AllSettings.volume/100)
-                AllSettings.explosound.set_volume(AllSettings.volume/100)
-
-            def update_music_volume():
-                AllSettings.music.set_volume(AllSettings.musicvolume/100)
-
-
-            def volume_plus(): 
-                if AllSettings.volume < 100:
-                    AllSettings.volume += 10
-                    volume_bars.append(pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(620 + (35 * len(volume_bars) - 1),211,20,40),border_radius=10))
-                    update_volume()
-
-            volume_plus_button = Volume_Plus(function=volume_plus)
-            volume_plus_button.draw()
-
-
-            def volume_minus(): 
-                if AllSettings.volume > 0:
-                    AllSettings.volume -= 10
-                    AllSettings.DISPLAY.fill(AllSettings.Black,rect=volume_bars[len(volume_bars) - 1])
-                    update_volume()
-
-            volume_minus_button = Volume_Minus(function=volume_minus)
-            volume_minus_button.draw()
-
-
-            def music_volume_plus(): 
-                if AllSettings.musicvolume < 100:
-                    AllSettings.musicvolume += 10
-                    music_bars.append(pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(620 + (35 * len(music_bars) - 1),211,20,40),border_radius=10))
-                    update_music_volume()
-
-            music_volume_plus_button = Volume_Plus(function=music_volume_plus)
-            music_volume_plus_button.draw()
-
-
-            def music_volume_minus(): 
-                if AllSettings.musicvolume > 0:
-                    AllSettings.musicvolume -= 10
-                    AllSettings.DISPLAY.fill(AllSettings.Black,rect=music_bars[len(music_bars) - 1])
-                    update_music_volume()
-
-            music_volume_minus_button = Volume_Minus(function=music_volume_minus)
-            music_volume_minus_button.draw()
-
-
-            volume_icon = Volume()
-            volume_icon.draw()
-            music_icon = Music_Volume()
-            music_icon.draw()
-
-            Settingmenu.draw()
-            SettingsSound.draw()
-            SettingsVideo.draw()
-            SettingsControls.draw()
-
-
             pos = pygame.mouse.get_pos()
             if not SettingsSound.rect.collidepoint(pos):
                 if not SettingsVideo.rect.collidepoint(pos):
                     if not SettingsControls.rect.collidepoint(pos):
-                        if not volume_plus_button.rect.collidepoint(pos):
-                            if not volume_minus_button.rect.collidepoint(pos):
-                                if not music_volume_plus_button.rect.collidepoint(pos):
-                                    if not music_volume_minus_button.rect.collidepoint(pos):
-                                        pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
+                        if not SettingsBack.rect.collidepoint(pos):
+                            if not volume_plus_button.rect.collidepoint(pos):
+                                if not volume_minus_button.rect.collidepoint(pos):
+                                    if not music_volume_plus_button.rect.collidepoint(pos):
+                                        if not music_volume_minus_button.rect.collidepoint(pos):
+                                            pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
+            
+            volume_plus_button.draw() 
+            volume_minus_button.draw()
+                                        
+            music_volume_plus_button.draw()
+            music_volume_minus_button.draw()
 
+            SettingsSound.draw(menu=self)
+            SettingsVideo.draw(menu=self)
+            SettingsControls.draw(menu=self)
+            SettingsBack.draw(menu=self)
+            
+            font = pygame.font.Font(os.path.join("data/fonts",'freesansbold.ttf'), 20)
 
-            font_obj2 = pygame.font.Font(os.path.join("data/fonts",'freesansbold.ttf'), 20)
-            Volume2 = font_obj2.render(str(AllSettings.volume) + "%" , True, AllSettings.WHITE)
-            AllSettings.DISPLAY.blit(Volume2,(795,260))
+            if (old_volume_rect != None):
+                AllSettings.DISPLAY.fill(AllSettings.Black,rect=old_volume_rect)
 
-            font_obj3 = pygame.font.Font(os.path.join("data/fonts",'freesansbold.ttf'), 20)
-            Volume3 = font_obj3.render(str(AllSettings.musicvolume) + "%" , True, AllSettings.WHITE)
-            AllSettings.DISPLAY.blit(Volume3,(795,340))
+            volume_text = font.render(str(self.player.volume) + "%" , True, AllSettings.WHITE)
+            old_volume_rect = AllSettings.DISPLAY.blit(volume_text,(795,260))
+            
+            
+            if (old_music_volume_rect != None):
+                AllSettings.DISPLAY.fill(AllSettings.Black,rect=old_music_volume_rect)
+                
+            music_volume_text = font.render(str(self.player.music_volume) + "%" , True, AllSettings.WHITE)
+            old_music_volume_rect = AllSettings.DISPLAY.blit(music_volume_text,(795,340))
                         
                                     
             pygame.display.update()  
@@ -181,10 +200,11 @@ class Menu():
                                                     if not re640x480.rect.collidepoint(pos):
                                                         pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
             Settingmenu.draw()
-            SettingsVideo.draw()
-            SettingsSound.draw()
-            SettingsControls.draw()
-            SettingsBack.draw()
+            SettingsVideo.draw(menu=self)
+            SettingsSound.draw(menu=self)
+            SettingsControls.draw(menu=self)
+            SettingsBack.draw(menu=self)
+            
             Fullcheckbox.draw()
             Fullscreenmodepng.draw()
             resolution.draw()
@@ -284,14 +304,21 @@ class Menu():
 
 
 
-            pygame.display.update()  
+            pygame.display.update() 
 
     def Controlmenu(self):
+        controldraw = controlesettings()
+        controlkeydraw = keys()
+        controlkeyinputdraw = keyinputs()
+        
+        
+
         while (not self.back) and (self.selected_window == Window.Control):
             for event in pygame.event.get():
                 if event.type==QUIT:
                     pygame.quit()
                     exit()
+                    
             pos = pygame.mouse.get_pos()
             if not SettingsControls.rect.collidepoint(pos):
                 if not SettingsVideo.rect.collidepoint(pos):
@@ -299,40 +326,44 @@ class Menu():
                         if not SettingsBack.rect.collidepoint(pos):
                             if not controlkeyinputdraw.rect.collidepoint(pos):
                                 pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
+                                
             Settingmenu.draw()
-            SettingsControls.draw()
-            SettingsVideo.draw()
-            SettingsSound.draw()
-            SettingsBack.draw()
+            SettingsControls.draw(menu=self)
+            SettingsVideo.draw(menu=self)
+            SettingsSound.draw(menu=self)
+            SettingsBack.draw(menu=self)
+            
             controlkeydraw.draw()
             controldraw.draw()
-            controlkeyinputdraw.draw()
+            controlkeyinputdraw.draw(player=self.player)
 
-            # shoot    
-            if self.start_input:
-                pygame.key.get_pressed().first()
+            
+            if (old_textinput_shoot_rect != None):
+                AllSettings.DISPLAY.fill(AllSettings.Black,rect=old_textinput_shoot_rect)
+            elif (old_textinput_move_right_rect != None):
+                AllSettings.DISPLAY.fill(AllSettings.Black,rect=old_textinput_move_right_rect)
+            elif (old_textinput_move_left_rect != None):
+                AllSettings.DISPLAY.fill(AllSettings.Black,rect=old_textinput_move_left_rect)
+            elif (old_textinput_settings_rect != None):
+                AllSettings.DISPLAY.fill(AllSettings.Black,rect=old_textinput_settings_rect)
 
             font = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 50)
-            textinput = font.render(pygame.key.name(AllSettings.keywaspressed), True, AllSettings.Yellow)
-            AllSettings.DISPLAY.blit(textinput,(910,170))
-
-            # move right
-            if AllSettings.startinput == True:
-                pygame.key.get_pressed()
-            font1 = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 50)
-            textinput1 = font1.render(pygame.key.name(AllSettings.keywaspressed1), True, AllSettings.Yellow)
-            AllSettings.DISPLAY.blit(textinput1,(910,270))
-
-            # move left
-            font2 = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 50)
-            textinput2 = font2.render(pygame.key.name(AllSettings.keywaspressed2), True, AllSettings.Yellow)
-            AllSettings.DISPLAY.blit(textinput2,(910,370))
-        
-            # Settings
             
-            font3 = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 50)
-            textinput3 = font3.render(pygame.key.name(AllSettings.keywaspressed3), True, AllSettings.Yellow)
-            AllSettings.DISPLAY.blit(textinput3,(910,470))
+            #shoot key
+            textinput_shoot = font.render(pygame.key.name(Player.Player.shoot_key), True, AllSettings.Yellow)
+            old_textinput_shoot_rect = AllSettings.DISPLAY.blit(textinput_shoot,(910,170))
+
+            #move right key
+            textinput_move_right = font.render(pygame.key.name(Player.Player.move_right_key), True, AllSettings.Yellow)
+            old_textinput_move_right_rect = AllSettings.DISPLAY.blit(textinput_move_right,(910,270))
+
+            #move left key
+            textinput_move_left = font.render(pygame.key.name(Player.Player.move_left_key), True, AllSettings.Yellow)
+            old_textinput_move_left_rect = AllSettings.DISPLAY.blit(textinput_move_left,(910,370))
+        
+            #shoot key
+            textinput_settings = font.render(pygame.key.name(Player.Player.settings_key), True, AllSettings.Yellow)
+            old_textinput_settings_rect = AllSettings.DISPLAY.blit(textinput_settings,(910,470))
 
             pygame.display.update() 
 
@@ -415,9 +446,9 @@ class ButtonContinue():
                 thread_timer = Thread(target=level1.rungame.timer)
                 thread_timer.start()
 
-class SettingsMenu():
+class SettingsMenuBackground():
     def __init__(self):
-        self.image = AllSettings.Settingsmenu
+        self.image = AllSettings.Settingsmenu_bg
         self.rect = self.image.get_rect()
         self.rect.x = 140
         self.rect.y = 60
@@ -430,14 +461,13 @@ class SoundSettings():
         self.rect = self.image.get_rect()
         self.rect.x = 188
         self.rect.y = 134
-    def draw(self):
+    def draw(self,menu: Menu):
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
         if self.rect.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
-                menu = Menu()
                 menu.selected_window = Window.Sound
                 menu.Soundmenu()
 
@@ -447,7 +477,7 @@ class VideoSettings():
         self.rect = self.image.get_rect()
         self.rect.x = 517
         self.rect.y = 134
-    def draw(self):
+    def draw(self,menu: Menu):
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
@@ -455,7 +485,6 @@ class VideoSettings():
         if self.rect.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
-                menu = Menu()
                 menu.selected_window = Window.Video
                 menu.VideoSettings()
 
@@ -465,14 +494,13 @@ class ControlsSettings():
         self.rect = self.image.get_rect()
         self.rect.x = 823
         self.rect.y = 134
-    def draw(self):
+    def draw(self,menu: Menu):
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.image,(self.rect.x,self.rect.y))
 
         if self.rect.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
-                menu = Menu()
                 menu.selected_window = Window.Control
                 menu.Controlmenu()
 
@@ -482,7 +510,7 @@ class backSettingsMenu():
         self.rect = self.image.get_rect()
         self.rect.x = 967
         self.rect.y = 566 
-    def draw(self):
+    def draw(self,menu: Menu):
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
@@ -491,10 +519,7 @@ class backSettingsMenu():
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.click.play()
-                menu = Menu()
-                menu.back = True
-
-
+                menu.back = True      
 
 class Volume():
     def __init__(self):
@@ -506,11 +531,11 @@ class Volume():
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
 class Volume_Plus():
-    def __init__(self,function):
+    def __init__(self,function,x,y):
         self.image = AllSettings.plus
         self.rect = self.image.get_rect()
-        self.rect.x = 975
-        self.rect.y = 211
+        self.rect.x = x
+        self.rect.y = y
         self.cooldown = 300
         self.last = pygame.time.get_ticks()
         self.function = function
@@ -518,7 +543,6 @@ class Volume_Plus():
     def draw(self):
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
-
 
         if self.rect.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
@@ -530,12 +554,12 @@ class Volume_Plus():
                     self.function()
 
 class Volume_Minus():
-    def __init__(self,function):
+    def __init__(self,function,x,y):
         self.image = AllSettings.minus
         self.rect = self.image.get_rect()
-        self.rect.x = 550
-        self.rect.y = 211
-        self.cooldown = 300
+        self.rect.x = x
+        self.rect.y = y
+        self.cooldown = 300 
         self.last = pygame.time.get_ticks()
         self.function = function
 
@@ -543,10 +567,9 @@ class Volume_Minus():
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
-
         if self.rect.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
-            if pygame.mouse.get_pressed()[0] == 1:#
+            if pygame.mouse.get_pressed()[0] == 1:
                 now = pygame.time.get_ticks()
                 if now - self.last >= self.cooldown:
                     self.last = now
@@ -571,6 +594,7 @@ class Resolution():
         self.rect.y = 295
     def draw(self):
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
+        
 class dropdown():
     def __init__(self):
         self.image = AllSettings.zeile
@@ -600,6 +624,7 @@ class dropdownrahmen():
         self.rect.y = 335
     def draw(self):
         AllSettings.DISPLAY.blit(self.image,(self.rect.x,self.rect.y))
+        
 class currentResolution():
     def __init__(self):
         font = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 32)
@@ -794,7 +819,8 @@ class keyinputs():
         self.rect3.y = 484
         self.start_time = time.time()
         self.seconds = int(10)
-    def draw(self):
+        
+    def draw(self,player: Player.Player):
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.keyinput,(self.rect.x,self.rect.y))
         AllSettings.DISPLAY.blit(self.keyinput1,(self.rect1.x,self.rect1.y))
@@ -804,27 +830,29 @@ class keyinputs():
         if self.rect.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
             if pygame.mouse.get_pressed()[0] == 1:
-                AllSettings.startinput = True
-        if self.rect1.collidepoint(pos):
+                player.shoot_key = pygame.key.get_pressed().first()
+                
+        elif self.rect1.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
             if pygame.mouse.get_pressed()[0] == 1:
-                AllSettings.startinput1 = True
-        if self.rect2.collidepoint(pos):
+                player.move_right_key = pygame.key.get_pressed().first()
+
+        elif self.rect2.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
             if pygame.mouse.get_pressed()[0] == 1:
-                AllSettings.startinput2 = True
-        if self.rect3.collidepoint(pos):
+                player.move_left_key = pygame.key.get_pressed().first()
+                
+        elif self.rect3.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
             if pygame.mouse.get_pressed()[0] == 1:
-                AllSettings.startinput3 = True
+                player.settings_key = pygame.key.get_pressed().first()
 
 cooldown0 = 1200
 last0 = pygame.time.get_ticks()
-controldraw = controlesettings()
-controlkeydraw = keys()
-controlkeyinputdraw = keyinputs()
+
 Fullcheckbox = Fullscreencheckbox()
 Fullscreenmodepng = Fullscreenmode()
+
 SettingsSound = SoundSettings()
 SettingsVideo = VideoSettings()
 SettingsControls = ControlsSettings()
@@ -833,12 +861,14 @@ SettingsBack = backSettingsMenu()
 resolution = Resolution()
 dropdownmenu = dropdown()
 Dropdownrahmen = dropdownrahmen()
+
 re1920x1080 = currentResolution()
 re1680x1050 = r1680x1050()
 re1280x1024 = r1280x1024()
 re720x1280 = r720x1280()
 re640x480 = r640x480()
+
 Settingsbutton = ButtonSettings()
 Menusbutton = ButtonMenu()
 Continuebutton = ButtonContinue()
-Settingmenu = SettingsMenu()
+Settingmenu = SettingsMenuBackground()
