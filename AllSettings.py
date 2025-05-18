@@ -129,6 +129,7 @@ reso1 = "1680 x 1050"
 reso2 = "1280 x 1024"
 reso3 = "720  x  1280"
 reso4 = "640  x  480"
+
 LoginName = ""
 kill = False
 Leader = False

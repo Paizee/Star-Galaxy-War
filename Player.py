@@ -36,7 +36,8 @@ class Player(pygame.sprite.Sprite):
         #sound
         self.volume = 100
         self.music_volume = 100
-        
+        #video
+        self.fullscreen = False
         
     def update(self):
         self.movement()

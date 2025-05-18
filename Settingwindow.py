@@ -26,8 +26,9 @@ class Menu():
         self.selected_window = Window.Sound,
         self.settings_menu_selected = True
         self.back = False
-        self.start_input = False
         self.player = player
+        #video
+        self.res_frame_open = False
 
     def Menu(self):
         while self.is_running:
@@ -54,17 +55,17 @@ class Menu():
                     exit()
                     
             pos = pygame.mouse.get_pos()
-            if not SettingsSound.rect.collidepoint(pos):
-                if not SettingsVideo.rect.collidepoint(pos):
-                    if not SettingsControls.rect.collidepoint(pos):
-                        if not SettingsBack.rect.collidepoint(pos):
+            if not SettingsSound_Label.rect.collidepoint(pos):
+                if not SettingsVideo_Label.rect.collidepoint(pos):
+                    if not SettingsControls_Label.rect.collidepoint(pos):
+                        if not SettingsBack_Button.rect.collidepoint(pos):
                             pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
                             
             Settingmenu.draw()
-            SettingsSound.draw(menu=self)
-            SettingsVideo.draw(menu=self)
-            SettingsControls.draw(menu=self)
-            SettingsBack.draw(menu=self)
+            SettingsSound_Label.draw(menu=self)
+            SettingsVideo_Label.draw(menu=self)
+            SettingsControls_Label.draw(menu=self)
+            SettingsBack_Button.draw(menu=self)
             pygame.display.update()
                 
     def Soundmenu(self):
@@ -125,11 +126,11 @@ class Menu():
         music_volume_minus_button = Volume_Minus(function=music_volume_minus,x=550,y=295)
 
 
-        volume_icon = Volume()
-        music_icon = Music_Volume()
+        volume_label = Volume_Label()
+        music_label = Music_Label()
         
-        volume_icon.draw()
-        music_icon.draw()
+        volume_label.draw()
+        music_label.draw()
         
         old_volume_rect = None
         old_music_volume_rect = None
@@ -141,10 +142,10 @@ class Menu():
                     exit()
 
             pos = pygame.mouse.get_pos()
-            if not SettingsSound.rect.collidepoint(pos):
-                if not SettingsVideo.rect.collidepoint(pos):
-                    if not SettingsControls.rect.collidepoint(pos):
-                        if not SettingsBack.rect.collidepoint(pos):
+            if not SettingsSound_Label.rect.collidepoint(pos):
+                if not SettingsVideo_Label.rect.collidepoint(pos):
+                    if not SettingsControls_Label.rect.collidepoint(pos):
+                        if not SettingsBack_Button.rect.collidepoint(pos):
                             if not volume_plus_button.rect.collidepoint(pos):
                                 if not volume_minus_button.rect.collidepoint(pos):
                                     if not music_volume_plus_button.rect.collidepoint(pos):
@@ -157,10 +158,10 @@ class Menu():
             music_volume_plus_button.draw()
             music_volume_minus_button.draw()
 
-            SettingsSound.draw(menu=self)
-            SettingsVideo.draw(menu=self)
-            SettingsControls.draw(menu=self)
-            SettingsBack.draw(menu=self)
+            SettingsSound_Label.draw(menu=self)
+            SettingsVideo_Label.draw(menu=self)
+            SettingsControls_Label.draw(menu=self)
+            SettingsBack_Button.draw(menu=self)
             
             font = pygame.font.Font(os.path.join("data/fonts",'freesansbold.ttf'), 20)
 
@@ -181,138 +182,90 @@ class Menu():
             pygame.display.update()  
 
     def VideoSettings(self):
+        Fullcheckbox = Fullscreencheckbox()
+        Fullscreen_label = Fullscreen_Label()
+        
+        resolution_label = Resolution_Label()
+        dropdownmenu = Dropdown_Menu()
+        dropdown_frame = Dropdown_Frame()
+
+        current_res = currentResolution_Label()
+        re1920x1080= res_dropdown_button(x=785,y=332,width=1920,height=1080)
+        re1680x1050 = res_dropdown_button(x=785,y=372,width=1680,height=1050)
+        re1280x1024 = res_dropdown_button(x=805,y=412,width=1280,height=1024)
+        re1280x720 = res_dropdown_button(x=800,y=452,width=1280,height=720)
+        
+        old_fullscreen_rect = None
+        old_res_frame_rect = None
+    
+        def toggle_res_frame():
+            self.res_frame_open = not self.res_frame_open
+            current_res = currentResolution_Label()
+            
         while (not self.back) and (self.selected_window == Window.Video):
             for event in pygame.event.get():
                 if event.type==QUIT:
                     pygame.quit()
                     exit()
             pos = pygame.mouse.get_pos()
-            if not SettingsSound.rect.collidepoint(pos):
-                if not SettingsVideo.rect.collidepoint(pos):
-                    if not SettingsControls.rect.collidepoint(pos):
-                        if not SettingsBack.rect.collidepoint(pos):
+            if not SettingsSound_Label.rect.collidepoint(pos):
+                if not SettingsVideo_Label.rect.collidepoint(pos):
+                    if not SettingsControls_Label.rect.collidepoint(pos):
+                        if not SettingsBack_Button.rect.collidepoint(pos):
                             if not Fullcheckbox.rect.collidepoint(pos):
-                                if not resolution.rect.collidepoint(pos):
+                                if not resolution_label.rect.collidepoint(pos):
                                     if not dropdownmenu.rect.collidepoint(pos):
                                         if not re1680x1050.rect.collidepoint(pos):
                                             if not re1280x1024.rect.collidepoint(pos):
-                                                if not re720x1280.rect.collidepoint(pos):
-                                                    if not re640x480.rect.collidepoint(pos):
+                                                if not re1280x720.rect.collidepoint(pos):
+                                                    if not re1920x1080.rect.collidepoint(pos):
                                                         pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
-            Settingmenu.draw()
-            SettingsVideo.draw(menu=self)
-            SettingsSound.draw(menu=self)
-            SettingsControls.draw(menu=self)
-            SettingsBack.draw(menu=self)
+                                                        
+
             
-            Fullcheckbox.draw()
-            Fullscreenmodepng.draw()
-            resolution.draw()
-            dropdownmenu.draw()
-            re1920x1080.draw()
+            Settingmenu.draw()
+            SettingsVideo_Label.draw(menu=self)
+            SettingsSound_Label.draw(menu=self)
+            SettingsControls_Label.draw(menu=self)
+            SettingsBack_Button.draw(menu=self)
+            
+            Fullcheckbox.draw(player=self.player)
+            Fullscreen_label.draw()
+            
+            resolution_label.draw()
+            dropdownmenu.draw(toggle_res_frame=toggle_res_frame)
+            current_res.draw()
 
-            if AllSettings.toggofull == True:
-                AllSettings.DISPLAY.blit(AllSettings.xohnekasten,(805,200))
-            if AllSettings.toggofull2 == 2: 
-                AllSettings.toggofull2 = 0
-            if AllSettings.toggofull2 == 0:
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(809,203,40,33))
+            if self.player.fullscreen:
+                old_fullscreen_rect = AllSettings.DISPLAY.blit(AllSettings.xohnekasten,(815,210))
+            else:
+                if (old_fullscreen_rect != None):
+                    AllSettings.DISPLAY.fill(AllSettings.Black, old_fullscreen_rect)
+              
 
-            if AllSettings.rahmenmenu == True:
-                Dropdownrahmen.draw()
-                re1680x1050.draw()
-                re1280x1024.draw()
-                re720x1280.draw()
-                re640x480.draw()
-            if AllSettings.closerahmen == 2: 
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(775,335,300,202))
-                AllSettings.closerahmen = 0
-            if AllSettings. screen_height == 1920:
-                AllSettings.reso1 = "1680 x 1050"
-                AllSettings.reso2 = "1280 x 1024"
-                AllSettings.reso3 = "1281 x  720"
-                AllSettings.reso4 = "640  x  480 "
-            if AllSettings.screen_height == 1680:
-                AllSettings.reso1 = "1920 x 1080"
-                AllSettings.reso2 = "1280 x 1024"
-                AllSettings.reso3 = "1281 x  720"
-                AllSettings.reso4 = "640  x  480 "
-            if AllSettings.screen_height == 1281:
-                AllSettings.reso1 = "1920 x 1080"
-                AllSettings.reso2 = "1680 x 1050"
-                AllSettings.reso3 = "1281 x  720"
-                AllSettings.reso4 = "640  x  480 "
-            if AllSettings.screen_height == 1280:
-                AllSettings.reso1 = "1920 x 1080"
-                AllSettings.reso2 = "1680 x 1050"
-                AllSettings.reso3 = "1280 x 1024"
-                AllSettings.reso4 = "640  x  480 "
-            if AllSettings.screen_height == 640:
-                AllSettings.reso1 = "1920 x 1080"
-                AllSettings.reso2 = "1680 x 1050"
-                AllSettings.reso3 = "1280 x 1024"
-                AllSettings.reso4 = "1281 x  720"
-
-
-
-            if AllSettings.Apply == True:
-                Settingmenu.draw()
-                SettingsVideo.draw()
-                SettingsBack.draw()
-                SettingsSound.draw()
-                SettingsControls.draw()
-                Fullcheckbox.draw()
-                Fullscreenmodepng.draw()
-                resolution.draw()
-                dropdownmenu.draw()
-                re1920x1080.draw()
-
-            if AllSettings.rahmenmenu == True:
-                Dropdownrahmen.draw()
-                re1680x1050.draw()
-                re1280x1024.draw()
-                re720x1280.draw()
-                re640x480.draw()
-            if AllSettings.closerahmen == 2: 
-                pygame.draw.rect(AllSettings.DISPLAY,AllSettings.Black,pygame.Rect(775,335,300,202))
-                AllSettings.closerahmen = 0
-            if AllSettings.screen_height == 1920:
-                AllSettings.reso1 = "1680 x 1050"
-                AllSettings.reso2 = "1280 x 1024"
-                AllSettings.reso3 = "1281 x  720"
-                AllSettings.reso4 = "640  x  480 "
-            if AllSettings.screen_height == 1680:
-                AllSettings.reso1 = "1920 x 1080"
-                AllSettings.reso2 = "1280 x 1024"
-                AllSettings.reso3 = "1281 x  720"
-                AllSettings.reso4 = "640  x  480 "
-            if AllSettings.screen_height == 1281:
-                AllSettings.reso1 = "1920 x 1080"
-                AllSettings.reso2 = "1680 x 1050"
-                AllSettings.reso3 = "1281 x  720"
-                AllSettings.reso4 = "640  x  480 "
-            if AllSettings.screen_height == 1280:
-                AllSettings.reso1 = "1920 x 1080"
-                AllSettings.reso2 = "1680 x 1050"
-                AllSettings.reso3 = "1280 x 1024"
-                AllSettings.reso4 = "640  x  480 "
-            if AllSettings.screen_height == 640:
-                AllSettings.reso1 = "1920 x 1080"
-                AllSettings.reso2 = "1680 x 1050"
-                AllSettings.reso3 = "1280 x 1024"
-                AllSettings.reso4 = "1281 x  720"
-
-
-
+            
+            if self.res_frame_open:
+                old_res_frame_rect = dropdown_frame.draw()
+                re1920x1080.draw(toggle_res_frame=toggle_res_frame)
+                re1680x1050.draw(toggle_res_frame=toggle_res_frame)
+                re1280x1024.draw(toggle_res_frame=toggle_res_frame)
+                re1280x720.draw(toggle_res_frame=toggle_res_frame)
+            else:
+                if old_res_frame_rect != None:
+                    AllSettings.DISPLAY.fill(AllSettings.Black, old_res_frame_rect)
+            
             pygame.display.update() 
 
     def Controlmenu(self):
         controldraw = controlesettings()
-        controlkeydraw = keys()
-        controlkeyinputdraw = keyinputs()
+        key_labels = Key_Labels()
+        key_input_boxes = Key_Input_Boxes()
         
         
-
+        old_textinput_shoot_rect = None
+        old_textinput_move_right_rect = None
+        old_textinput_move_left_rect = None
+        old_textinput_settings_rect = None
         while (not self.back) and (self.selected_window == Window.Control):
             for event in pygame.event.get():
                 if event.type==QUIT:
@@ -320,22 +273,22 @@ class Menu():
                     exit()
                     
             pos = pygame.mouse.get_pos()
-            if not SettingsControls.rect.collidepoint(pos):
-                if not SettingsVideo.rect.collidepoint(pos):
-                    if not SettingsSound.rect.collidepoint(pos):
-                        if not SettingsBack.rect.collidepoint(pos):
-                            if not controlkeyinputdraw.rect.collidepoint(pos):
+            if not SettingsControls_Label.rect.collidepoint(pos):
+                if not SettingsVideo_Label.rect.collidepoint(pos):
+                    if not SettingsSound_Label.rect.collidepoint(pos):
+                        if not SettingsBack_Button.rect.collidepoint(pos):
+                            if not key_input_boxes.rect.collidepoint(pos):
                                 pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
                                 
             Settingmenu.draw()
-            SettingsControls.draw(menu=self)
-            SettingsVideo.draw(menu=self)
-            SettingsSound.draw(menu=self)
-            SettingsBack.draw(menu=self)
+            SettingsControls_Label.draw(menu=self)
+            SettingsVideo_Label.draw(menu=self)
+            SettingsSound_Label.draw(menu=self)
+            SettingsBack_Button.draw(menu=self)
             
-            controlkeydraw.draw()
+            key_labels.draw()
             controldraw.draw()
-            controlkeyinputdraw.draw(player=self.player)
+            key_input_boxes.draw(player=self.player)
 
             
             if (old_textinput_shoot_rect != None):
@@ -350,19 +303,19 @@ class Menu():
             font = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 50)
             
             #shoot key
-            textinput_shoot = font.render(pygame.key.name(Player.Player.shoot_key), True, AllSettings.Yellow)
+            textinput_shoot = font.render(pygame.key.name(self.player.shoot_key), True, AllSettings.Yellow)
             old_textinput_shoot_rect = AllSettings.DISPLAY.blit(textinput_shoot,(910,170))
 
             #move right key
-            textinput_move_right = font.render(pygame.key.name(Player.Player.move_right_key), True, AllSettings.Yellow)
+            textinput_move_right = font.render(pygame.key.name(self.player.move_right_key), True, AllSettings.Yellow)
             old_textinput_move_right_rect = AllSettings.DISPLAY.blit(textinput_move_right,(910,270))
 
             #move left key
-            textinput_move_left = font.render(pygame.key.name(Player.Player.move_left_key), True, AllSettings.Yellow)
+            textinput_move_left = font.render(pygame.key.name(self.player.move_left_key), True, AllSettings.Yellow)
             old_textinput_move_left_rect = AllSettings.DISPLAY.blit(textinput_move_left,(910,370))
         
             #shoot key
-            textinput_settings = font.render(pygame.key.name(Player.Player.settings_key), True, AllSettings.Yellow)
+            textinput_settings = font.render(pygame.key.name(self.player.settings_key), True, AllSettings.Yellow)
             old_textinput_settings_rect = AllSettings.DISPLAY.blit(textinput_settings,(910,470))
 
             pygame.display.update() 
@@ -521,7 +474,7 @@ class backSettingsMenu():
                 AllSettings.click.play()
                 menu.back = True      
 
-class Volume():
+class Volume_Label():
     def __init__(self):
         self.image = AllSettings.volumepng
         self.rect = self.image.get_rect()
@@ -576,7 +529,7 @@ class Volume_Minus():
                     AllSettings.click.play()
                     self.function()
 
-class Music_Volume():
+class Music_Label():
     def __init__(self):
         self.image = AllSettings.musicpng
         self.rect = self.image.get_rect()
@@ -586,7 +539,7 @@ class Music_Volume():
     def draw(self):
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
-class Resolution():
+class Resolution_Label():
     def __init__(self):
         self.image = AllSettings.reso
         self.rect = self.image.get_rect()
@@ -595,7 +548,7 @@ class Resolution():
     def draw(self):
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
         
-class dropdown():
+class Dropdown_Menu():
     def __init__(self):
         self.image = AllSettings.zeile
         self.rect = self.image.get_rect()
@@ -603,7 +556,8 @@ class dropdown():
         self.rect.y = 286
         self.cooldown = 300
         self.last = pygame.time.get_ticks()
-    def draw(self):
+        
+    def draw(self,toggle_res_frame):
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
@@ -614,9 +568,8 @@ class dropdown():
                 if now - self.last >= self.cooldown:
                     self.last = now
                     AllSettings.click.play()
-                    AllSettings.rahmenmenu = True
-                    AllSettings.closerahmen += 1
-class dropdownrahmen():
+                    toggle_res_frame()
+class Dropdown_Frame():
     def __init__(self):
         self.image = AllSettings.rahmen
         self.rect = self.image.get_rect()
@@ -625,10 +578,10 @@ class dropdownrahmen():
     def draw(self):
         AllSettings.DISPLAY.blit(self.image,(self.rect.x,self.rect.y))
         
-class currentResolution():
+class currentResolution_Label():
     def __init__(self):
         font = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 32)
-        self.text = font.render(str(AllSettings.screen_height) +  " x " + str(AllSettings.screen_width), True, AllSettings.Yellow)
+        self.text = font.render(f"{AllSettings.screen_width} x {AllSettings.screen_height}", True, AllSettings.Yellow)
         self.rect = self.text.get_rect()
         self.rect.x = 785
         self.rect.y = 282
@@ -636,65 +589,19 @@ class currentResolution():
     def draw(self):
         AllSettings.DISPLAY.blit(self.text,(self.rect.x, self.rect.y))
 
-class r1680x1050():
-    def __init__(self):
+class res_dropdown_button():
+    def __init__(self,x,y,width,height):
         font = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 32)
-        self.text = font.render(AllSettings.reso1, True, AllSettings.Yellow)
+        self.text = font.render(f"{width} x {height}", True, AllSettings.Yellow)
         self.rect = self.text.get_rect()
-        self.rect.x = 785
-        self.rect.y = 332
+        self.rect.x = x
+        self.rect.y = y
+        self.width = width
+        self.height = height
         self.cooldown = 300
         self.last = pygame.time.get_ticks()
-    def draw(self):
-        pos = pygame.mouse.get_pos()
-        AllSettings.DISPLAY.blit(self.text,(self.rect.x, self.rect.y))
-
-        if self.rect.collidepoint(pos):
-            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
-            if pygame.mouse.get_pressed()[0] == 1:
-                now = pygame.time.get_ticks()
-                if now - self.last >= self.cooldown:
-                    self.last = now
-                    AllSettings.click.play()
-                    AllSettings.screen_height = int(AllSettings.reso1[7:11])
-                    AllSettings.screen_width = int(AllSettings.reso1[0:4])
-                    AllSettings.Apply = True
-        return AllSettings.Apply
-class r1280x1024():
-    def __init__(self):
-        font = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 32)
-        self.text = font.render(AllSettings.reso2, True, AllSettings.Yellow)
-        self.rect = self.text.get_rect()
-        self.rect.x = 785
-        self.rect.y = 372
-        self.cooldown = 300
-        self.last = pygame.time.get_ticks()
-    def draw(self):
-        pos = pygame.mouse.get_pos()
-        AllSettings.DISPLAY.blit(self.text,(self.rect.x, self.rect.y))
-
-        if self.rect.collidepoint(pos):
-            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
-            if pygame.mouse.get_pressed()[0] == 1:
-                now = pygame.time.get_ticks()
-                if now - self.last >= self.cooldown:
-                    self.last = now
-                    AllSettings.click.play()
-                    AllSettings.screen_height = int(AllSettings.reso2[7:11])
-                    AllSettings.screen_width = int(AllSettings.reso2[0:4])
-                    AllSettings.Apply = True
-        return AllSettings.Apply
         
-class r720x1280():
-    def __init__(self):
-        font = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 32)
-        self.text = font.render(AllSettings.reso3, True, AllSettings.Yellow)
-        self.rect = self.text.get_rect()
-        self.rect.x = 805
-        self.rect.y = 412
-        self.cooldown = 300
-        self.last = pygame.time.get_ticks()
-    def draw(self):
+    def draw(self,toggle_res_frame):
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.text,(self.rect.x, self.rect.y))
 
@@ -705,35 +612,13 @@ class r720x1280():
                 if now - self.last >= self.cooldown:
                     self.last = now
                     AllSettings.click.play()
-                    AllSettings.screen_height = int(AllSettings.reso3[7:12])
-                    AllSettings.screen_width = int(AllSettings.reso3[0:4])
-                    AllSettings.Apply = True
-        return AllSettings.Apply
-class r640x480():
-    def __init__(self):
-        font = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 32)
-        self.text = font.render(AllSettings.reso4, True, AllSettings.Yellow)
-        self.rect = self.text.get_rect()
-        self.rect.x = 800
-        self.rect.y = 452
-        self.cooldown = 300
-        self.last = pygame.time.get_ticks()
-    def draw(self):
-        pos = pygame.mouse.get_pos()
-        AllSettings.DISPLAY.blit(self.text,(self.rect.x, self.rect.y))
+                    AllSettings.screen_height = self.height
+                    AllSettings.screen_width = self.width
+                    AllSettings.DISPLAY= pygame.display.set_mode((self.width,self.height),0,64)
+                    toggle_res_frame()
+                    
 
-        if self.rect.collidepoint(pos):
-            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
-            if pygame.mouse.get_pressed()[0] == 1:
-                now = pygame.time.get_ticks()
-                if now - self.last >= self.cooldown:
-                    self.last = now
-                    AllSettings.click.play()
-                    AllSettings.screen_height = int(AllSettings.reso4[7:12])
-                    AllSettings.screen_width = int(AllSettings.reso4[0:4])
-                    AllSettings.Apply = True
-        return AllSettings.Apply
-class Fullscreenmode():
+class Fullscreen_Label():
     def __init__(self):
         self.image = AllSettings.Fullscreenpng
         self.rect = self.image.get_rect()
@@ -750,7 +635,7 @@ class Fullscreencheckbox():
         self.rect.y = 200
         self.cooldown = 300
         self.last = pygame.time.get_ticks()
-    def draw(self):
+    def draw(self,player: Player.Player):
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
@@ -761,11 +646,9 @@ class Fullscreencheckbox():
                 if now - self.last >= self.cooldown:
                     self.last = now
                     AllSettings.click.play()
-                    AllSettings.toggofull = True
-                    AllSettings.toggofull2 += 1
+                    player.fullscreen = False 
                     pygame.display.toggle_fullscreen()
-        return AllSettings.toggofull
-
+                    
 class controlesettings():
     def __init__(self):
         self.image = AllSettings.keyspng
@@ -775,7 +658,7 @@ class controlesettings():
     def draw(self):
         AllSettings.DISPLAY.blit(self.image,(self.rect.x,self.rect.y))
 
-class keys():
+class Key_Labels():
     def __init__(self):
         self.shootimage = AllSettings.shootpng
         self.moverightimage = AllSettings.moverightpng
@@ -799,7 +682,7 @@ class keys():
         AllSettings.DISPLAY.blit(self.moveleftimage,(self.rect2.x,self.rect2.y))
         AllSettings.DISPLAY.blit(self.settingspng,(self.rect3.x,self.rect3.y))
 
-class keyinputs():
+class Key_Input_Boxes():
     def __init__(self):
         self.keyinput = AllSettings.keyinputpng
         self.keyinput1 = AllSettings.keyinputpng
@@ -819,6 +702,18 @@ class keyinputs():
         self.rect3.y = 484
         self.start_time = time.time()
         self.seconds = int(10)
+        self.start_input_shoot = False
+        self.start_input_move_left = False
+        self.start_input_move_right = False
+        self.start_input_settings = False
+        
+    def return_key(self):
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                print(event.key)
+                return event.key
+                
         
     def draw(self,player: Player.Player):
         pos = pygame.mouse.get_pos()
@@ -826,47 +721,63 @@ class keyinputs():
         AllSettings.DISPLAY.blit(self.keyinput1,(self.rect1.x,self.rect1.y))
         AllSettings.DISPLAY.blit(self.keyinput2,(self.rect2.x,self.rect2.y))
         AllSettings.DISPLAY.blit(self.keyinput3,(self.rect3.x,self.rect3.y))
-
+        
         if self.rect.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
             if pygame.mouse.get_pressed()[0] == 1:
-                player.shoot_key = pygame.key.get_pressed().first()
+                self.start_input_shoot = True
                 
         elif self.rect1.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
             if pygame.mouse.get_pressed()[0] == 1:
-                player.move_right_key = pygame.key.get_pressed().first()
+                self.start_input_move_right = True
 
         elif self.rect2.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
             if pygame.mouse.get_pressed()[0] == 1:
-                player.move_left_key = pygame.key.get_pressed().first()
+                self.start_input_move_left = True
                 
         elif self.rect3.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
             if pygame.mouse.get_pressed()[0] == 1:
-                player.settings_key = pygame.key.get_pressed().first()
+                self.start_input_settings = True
 
+        if self.start_input_shoot:
+            key = self.return_key()
+            if key != None:
+                self.start_input_shoot = False
+                player.shoot_key = key
+
+        elif self.start_input_move_right:
+            key = self.return_key()
+            if key != None:
+                self.start_input_move_right = False
+                player.move_right_key = key
+                
+        elif self.start_input_move_left:
+            key = self.return_key()
+            if key != None:
+                self.start_input_move_left = False
+                player.move_left_key = key
+                
+        elif self.start_input_settings:
+            key = self.return_key()
+            if key != None:
+                self.start_input_settings = False
+                player.settings_key = key
+                   
+                
+                
 cooldown0 = 1200
+
 last0 = pygame.time.get_ticks()
 
-Fullcheckbox = Fullscreencheckbox()
-Fullscreenmodepng = Fullscreenmode()
 
-SettingsSound = SoundSettings()
-SettingsVideo = VideoSettings()
-SettingsControls = ControlsSettings()
-SettingsBack = backSettingsMenu()
+SettingsSound_Label = SoundSettings()
+SettingsVideo_Label = VideoSettings()
+SettingsControls_Label = ControlsSettings()
+SettingsBack_Button = backSettingsMenu()
 
-resolution = Resolution()
-dropdownmenu = dropdown()
-Dropdownrahmen = dropdownrahmen()
-
-re1920x1080 = currentResolution()
-re1680x1050 = r1680x1050()
-re1280x1024 = r1280x1024()
-re720x1280 = r720x1280()
-re640x480 = r640x480()
 
 Settingsbutton = ButtonSettings()
 Menusbutton = ButtonMenu()
