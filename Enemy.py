@@ -22,10 +22,15 @@ class Enemie(pygame.sprite.Sprite):
         tfy = random.randrange(round(AllSettings.screen_height/1.5))
         self.rect.x = tfx
         self.rect.y = tfy
-        numsx = [2,-2]
+        numsx = [1,-1]
         self.speedx = random.choice(numsx)
-        numsy = [-1,1]
+        numsy = [1,-1]
         self.speedy = random.choice(numsy)
+        
+        self.x_limit_right = random.randint(100, AllSettings.screen_width - 100)
+        self.x_limit_left = 0
+        self.y_limit_down = random.randint(50, round(AllSettings.screen_height / 5))
+        self.y_limit_up = 5
 
         self.health = 4
         self.standard_health = 4
@@ -49,16 +54,14 @@ class Enemie(pygame.sprite.Sprite):
     def move(self):
         self.rect.x += self.speedx
         self.rect.y += self.speedy
-        
-        if self.rect.x > random.randint(0,round(AllSettings.screen_width - 90)):
-            self.speedx = -2
-        if self.rect.x < 0:
-            self.speedx = +2
-        if self.rect.y > random.randint(0,round(AllSettings.screen_height/5)):
-            self.speedy = -1
-        if self.rect.y < 5:
-            self.speedy = +1
+        if self.rect.x > self.x_limit_right or self.rect.x < self.x_limit_left:
+            self.speedx *= -1
+            self.x_limit_right = random.randint(100, AllSettings.screen_width - 100)
 
+        if self.rect.y > self.y_limit_down or self.rect.y < self.y_limit_up:
+            self.speedy *= -1
+            self.y_limit_down = random.randint(50, round(AllSettings.screen_height / 5))
+            
     def update(self):
         self.move()
         self.UpdateHealthBar()
@@ -69,7 +72,8 @@ class Enemie(pygame.sprite.Sprite):
         self.health_bar.y = self.rect.y
         self.health_bar.percentage = (self.health / self.standard_health) * 100
 
-
+    def kill_healthbar(self):
+        self.health_bar.kill()
 
 class Bullet_Red(pygame.sprite.Sprite):
 

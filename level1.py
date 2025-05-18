@@ -11,10 +11,9 @@ import Enemy
 import Player
 import Settingwindow
 from threading import Thread
-import coins
 
 
-class rungame():
+class game():
     is_running = True
     time_left = 10 #time left 
     
@@ -32,9 +31,6 @@ class rungame():
 
             thread_timer = Thread(target=self.timer)
             thread_timer.start()
-
-            last0 = pygame.time.get_ticks()
-            last = pygame.time.get_ticks()
 
             all_sprites_list = pygame.sprite.Group()
             explosion_list = pygame.sprite.Group()
@@ -54,12 +50,11 @@ class rungame():
                 bullet_f_enemy_list.add(sprite)
 
             def explode_enemy(enemy: Enemy.Enemie):
-                enemy.kill
                 expl = Animations.Explosion(enemy.rect.center)
+                enemy.kill_healthbar()
+                enemy.kill()
                 add_sprites_to_list(expl)
-                bullet_f_player_list.remove(bullet)
-                all_sprites_list.remove(bullet)
-                coins.own_coins.add(5)
+                player.add_coins(5)
                 self.time_left += 5
                 if player.health <= 15:
                     player.health += 1
@@ -85,7 +80,6 @@ class rungame():
                 player: Player.Player
                 for player in pygame.sprite.spritecollide(bullet, player_list,dokill=False):
                     player.health -= 1
-                    player.DrawHealthBar()
                     bullet_f_enemy_list.remove(bullet)
                     all_sprites_list.remove(bullet)
 
@@ -145,13 +139,10 @@ class rungame():
 
                 # canvas drawing shit
                 font_obj = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"), 64)
-                textcoin = font_obj.render("+"+str(coins.own_coins.amount)+"💰", True, AllSettings.Yellow)
+                textcoin = font_obj.render("+"+str(player.coins)+"💰", True, AllSettings.Yellow)
 
                 font_obj2 = pygame.font.Font(os.path.join("data/fonts",'freesansbold.ttf'), 20)
-                PlayerName = font_obj2.render(AllSettings.Playername, True, AllSettings.Lightgrey)
-                            
-                font_obj3 = pygame.font.Font(os.path.join("data/fonts",'freesansbold.ttf'), 20)
-                textenemie = font_obj3.render(AllSettings.enemiename, True, AllSettings.Lightgrey)
+                PlayerName = font_obj2.render(player.name, True, AllSettings.Lightgrey)
 
                 font_obj1 = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 64)
                 won = font_obj1.render("Congrats you won!", True, AllSettings.Yellow)
@@ -166,37 +157,78 @@ class rungame():
                 AllSettings.DISPLAY.blit(AllSettings.background, (0, 0))
                 AllSettings.DISPLAY.blit(timer,(AllSettings.screen_width/1.5, AllSettings.screen_height/36))
                 AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_width/2.2,AllSettings.screen_height/2.2))
-                AllSettings.DISPLAY.blit(textenemie,(AllSettings.screen_width/1.16, AllSettings.screen_height/1.195))
                 AllSettings.DISPLAY.blit(PlayerName,(AllSettings.screen_width/15, AllSettings.screen_height/1.195))
 
                 all_sprites_list.draw(AllSettings.DISPLAY)
-
+                player.DrawHealthBar()
+                
                 # if sprite list not contains player (player is dead)
-                if all_sprites_list.has(player_list) == False:
+                if not all_sprites_list.has(player_list) or not all_sprites_list.has(enemie_list): 
                     self.is_running = False
-                    winmenu = Settingwindow.ButtonwinMenu()
-                    if AllSettings.login == True:
-                        #dbcoins = str(AllSettings.collection.find_one({"Name":"Admin"},{ "_id": 0,"Coins": 1}))
-                        dbcoins = dbcoins.strip("{'Coins': }")
-                        #AllSettings.collection.find_one_and_update({"Name":"Admin"}, {"$set" : {"Coins": Coins}})
-                    AllSettings.DISPLAY.blit(AllSettings.background,(0,0))
-                    AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_width/2.2,AllSettings.screen_height/2.4))
-                    AllSettings.DISPLAY.blit(loose,(AllSettings.screen_width/6,AllSettings.screen_height/4))
-                    
-                    winmenu.draw()
-                # if sprite lsit not contains enemie (player won)
-                if all_sprites_list.has(enemie_list) == False:
-                    self.is_running = False
-                    winmenu = Settingwindow.ButtonwinMenu()
-                    if AllSettings.login == True:
-                        #dbcoins = str(AllSettings.collection.find_one({"Name":"Admin"},{ "_id": 0,"Coins": 1}))
-                        dbcoins = dbcoins.strip("{'Coins': }")
-                        #AllSettings.collection.find_one_and_update({"Name":"Admin"}, {"$set" : {"Coins": Coins}})
-                    AllSettings.DISPLAY.blit(AllSettings.background,(0,0))
-                    AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_width/2.2,AllSettings.screen_height/2.4))
-                    AllSettings.DISPLAY.blit(won,(AllSettings.screen_width/4,AllSettings.screen_height/4))
+                    end_screen = End_Screen(coins=player.coins,won=all_sprites_list.has(player_list))
+                    thread_lev1 = Thread(target=end_screen.show())
+                    thread_lev1.start()
                     
 
-                    winmenu.draw()
                 pygame.display.update()
 
+class End_Screen():
+    def __init__(self,coins,won):
+        self.is_running = True
+        self.coins = coins
+        self.won = won
+        
+    def stop_end_screen(self):
+        self.is_running = False  
+
+    def show(self):
+        if self.won:
+            font_obj1 = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 64)
+            won = font_obj1.render("Congrats you won!", True, AllSettings.Yellow)
+        else: 
+            font_obj4 = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 48)
+            loose = font_obj4.render("imagine you Loose in this Game!", True, AllSettings.Yellow)
+        
+        font_obj = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"), 64)
+        textcoin = font_obj.render(f"+ {self.coins} 💰", True, AllSettings.Yellow)
+        
+        end_screen_menu_button = End_Screen_Menu_Button()
+        while self.is_running:
+            for event in pygame.event.get():
+                if event.type==QUIT:
+                    pygame.quit()
+                    exit()
+                    
+            pos = pygame.mouse.get_pos()
+            if not end_screen_menu_button.rect.collidepoint(pos):
+                    pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
+             
+                                
+            AllSettings.DISPLAY.blit(AllSettings.background,(0,0))
+            AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_width/2.2,AllSettings.screen_height/2.4))
+            
+            if self.won:
+                AllSettings.DISPLAY.blit(won,(AllSettings.screen_width/6,AllSettings.screen_height/4))
+            else: AllSettings.DISPLAY.blit(loose,(AllSettings.screen_width/6,AllSettings.screen_height/4))
+            
+            end_screen_menu_button.draw(end_screen=self.stop_end_screen)
+            pygame.display.update()
+            
+            
+class End_Screen_Menu_Button():
+
+    def __init__(self):
+        self.image = AllSettings.butMenu1
+        self.rect = self.image.get_rect()
+        self.rect.x = AllSettings.screen_width/2.5
+        self.rect.y = AllSettings.screen_height/1.5
+
+    def draw(self,end_screen):
+        AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
+        pos = pygame.mouse.get_pos()
+        if self.rect.collidepoint(pos):
+            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
+            if pygame.mouse.get_pressed()[0] == 1:
+                AllSettings.click.play()
+                end_screen()
+                    

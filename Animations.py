@@ -15,7 +15,6 @@ class Explosion(pygame.sprite.Sprite):
 
     def __init__(self,center):
         super().__init__()
-
         self.image = AllSettings.explosion
         self.rect = self.image.get_rect(center=center)
         self.frame = 0

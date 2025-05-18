@@ -43,7 +43,7 @@ class Menu():
                         pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
 
             Menusbutton.draw()
-            Settingsbutton.draw()
+            Settingsbutton.draw(menu=self)
             Continuebutton.draw()
             pygame.display.update()  
         
@@ -339,24 +339,7 @@ class ButtonMenu():
                 AllSettings.kill = True
                 AllSettings.level1run = True
                 
-class ButtonwinMenu():
 
-    def __init__(self):
-        self.image = AllSettings.butMenu1
-        self.rect = self.image.get_rect()
-        self.rect.x = AllSettings.screen_width/3.5
-        self.rect.y = AllSettings.screen_height/1.5
-
-    def draw(self):
-        AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
-        pos = pygame.mouse.get_pos()
-        if self.rect.collidepoint(pos):
-            pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
-            if pygame.mouse.get_pressed()[0] == 1:
-                AllSettings.click.play()
-                #AllSettings.zeit = 10
-                AllSettings.kill = True
-                AllSettings.level1run = True
             
 class ButtonSettings():
 
@@ -366,14 +349,13 @@ class ButtonSettings():
         self.rect.x = AllSettings.screen_width/3
         self.rect.y = AllSettings.screen_height/2.5
 
-    def draw(self):
+    def draw(self,menu: Menu):
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
         pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.click.play()
-                menu =  Menu()
                 menu.settings_menu_selected = True
                 menu.SettingsMenu()
 
@@ -396,7 +378,7 @@ class ButtonContinue():
                 AllSettings.click.play()
                 AllSettings.run = True
                 AllSettings.kill = False
-                thread_timer = Thread(target=level1.rungame.timer)
+                thread_timer = Thread(target=level1.game.timer)
                 thread_timer.start()
 
 class SettingsMenuBackground():

@@ -9,7 +9,6 @@ import level1
 import Player
 import Settingwindow
 from threading import Thread
-import coins
 
 background = pygame.image.load(os.path.join("data/images","background.png")).convert()
 Play_ = pygame.image.load(os.path.join("data/images","Play_.png"))
@@ -63,13 +62,13 @@ class Menu():
         self.player = Player.Player(add_bullet=None,add_sprite=None,stop_game=None)
 
     def drawcoinsunlogged(self):
-        textcoin = AllSettings.font_objcoins.render(str(coins.own_coins.amount)+"💰", True, AllSettings.Yellow)
+        textcoin = AllSettings.font_objcoins.render(str(self.player.coins)+"💰", True, AllSettings.Yellow)
         infonotlogged = AllSettings.font_objnotlogged.render("You're not logged in, the coins are not save!",True,(255,0,0))
         AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_width/1.2,AllSettings.screen_height/1.2))
         AllSettings.DISPLAY.blit(infonotlogged,(AllSettings.screen_width/1.5,AllSettings.screen_height/1.05))
         
     def drawcoinsloggedin(self):
-        textcoin = AllSettings.font_objcoins.render(str(coins.own.amount)+"💰", True, AllSettings.Yellow)
+        textcoin = AllSettings.font_objcoins.render(str(self.player.coins)+"💰", True, AllSettings.Yellow)
         AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_width/1.2,AllSettings.screen_height/1.2))
 
     def drawUserunlogged(self):
@@ -106,8 +105,8 @@ class Menu():
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.click.play()
-                game = level1.rungame()
-                thread_lev1 = Thread(target=game.start_it())
+                game = level1.game()
+                thread_lev1 = Thread(target=game.runit())
                 thread_lev1.start()
                 
         if self.rect2.collidepoint(pos):

@@ -28,6 +28,8 @@ class Player(pygame.sprite.Sprite):
         self.stop_game = stop_game
         self.health = 15
         self.standart_health = 15
+        self.coins = 0
+        self.name = "Player"
         #keys
         self.move_left_key = K_a
         self.move_right_key = K_d
@@ -39,6 +41,12 @@ class Player(pygame.sprite.Sprite):
         #video
         self.fullscreen = False
         
+        
+    
+    def add_coins(self,amount):
+        self.coins += amount
+    
+    
     def update(self):
         self.movement()
 
@@ -74,7 +82,7 @@ class Player(pygame.sprite.Sprite):
     
     def DrawHealthBar(self):
         pygame.draw.rect(AllSettings.DISPLAY, (AllSettings.Lightgrey), (AllSettings.screen_width/15, AllSettings.screen_height/1.15, 100, 15), 1)
-        pygame.draw.rect(AllSettings.DISPLAY, (AllSettings.Green), (AllSettings.screen_width/15, AllSettings.screen_height/1.15, (self.health / self.standart_health) * 100  ,12.5))
+        pygame.draw.rect(AllSettings.DISPLAY, (AllSettings.Green), (AllSettings.screen_width/14.78, AllSettings.screen_height/1.1478, (self.health / self.standart_health) * 100  ,13))
         pygame.display.update()
 
 

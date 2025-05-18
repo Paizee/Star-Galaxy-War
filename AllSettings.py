@@ -15,6 +15,7 @@ DISPLAY=pygame.display.set_mode((screen_width,screen_height),0,64)
 pygame.display.set_caption("Star Galaxy War")
 logoiconpng = pygame.image.load(os.path.join("data/images","logoicon.png"))
 pygame.display.set_icon(logoiconpng)
+
 # settings
 FPS  = 60
 WHITE=(255,255,255)
@@ -87,15 +88,6 @@ click = pygame.mixer.Sound(os.path.join("data/sounds","click.wav"))
 font_objcoins = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"), 64)
 font_objnotlogged = pygame.font.Font(os.path.join("data/fonts","Rubik-Bold.TTF"), 16)
 
-
-Playername = "Player"
-enemiename = "TieFighter"
-
-Settings = True
-rahmenmenu = False
-Apply = False
-toggofull = False
-start = True
 run = True
 nameinput = False
 emailinput = False
@@ -110,25 +102,10 @@ Emailcheckfinish = False
 Passwordcheckfinish = False 
 Namecheckfinish = False
 login = False
-keywaspressed = K_SPACE
-keywaspressed1 = K_a
-keywaspressed2 = K_d
-keywaspressed3 = K_ESCAPE
-startinput = False
-startinput1 = False
-startinput2 = False
-startinput3 = False
-breakcontrol = False
-toggofull2 = 0
-closerahmen = 0
 
 
 volume = 100
 musicvolume = 100
-reso1 = "1680 x 1050"
-reso2 = "1280 x 1024"
-reso3 = "720  x  1280"
-reso4 = "640  x  480"
 
 LoginName = ""
 kill = False
