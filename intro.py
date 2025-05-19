@@ -6,7 +6,19 @@ import AllSettings
 
 
 class Play():
-    
+    height: int
+    gravity: int
+    speed: int
+    Playimage: pygame.Surface
+    shipimage: pygame.Surface
+    tiefighter: pygame.Surface
+    rect1: pygame.Rect
+    rect2: pygame.Rect
+    rect3: pygame.Rect
+    speedy:int
+    ship:bool
+
+
     def __init__(self):
         self.height = 25
         self.gravity = 1

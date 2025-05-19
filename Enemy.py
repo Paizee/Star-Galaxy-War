@@ -12,16 +12,37 @@ import Player
 import Settingwindow
 
 class Enemie(pygame.sprite.Sprite):
-    def __init__(self, add_sprite, add_bullet):
+    id: int
+    image: pygame.Surface
+    rect: pygame.Rect
+
+    numsx: list[int]
+    speedx: int
+    numsy = list[int]
+    speedy: int
+
+    x_limit_right: int
+    x_limit_left: int
+    y_limit_down: int
+    y_limit_up: int
+
+    health: int
+    standard_health: int
+
+    add_sprite = function
+    add_bullet = function
+
+    bullet_cooldown: int
+    last_bullet: int
+
+    target: Player.Player 
+    def __init__(self, add_sprite, add_bullet,player: Player.Player):
         super().__init__()
-        global tfx,tfy  
         self.id = random.randint(0,100)
         self.image = AllSettings.enemieimage
         self.rect = self.image.get_rect()
-        tfx = random.randrange(AllSettings.screen_width)
-        tfy = random.randrange(round(AllSettings.screen_height/1.5))
-        self.rect.x = tfx
-        self.rect.y = tfy
+        self.rect.x = random.randrange(AllSettings.screen_width)
+        self.rect.y = random.randrange(round(AllSettings.screen_height/1.5))
         numsx = [1,-1]
         self.speedx = random.choice(numsx)
         numsy = [1,-1]
@@ -42,11 +63,13 @@ class Enemie(pygame.sprite.Sprite):
 
         self.health_bar = Health_Bar(x=self.rect.x,y=self.rect.y,percentage=100)
         add_sprite(self.health_bar)
+
+        self.target = player 
             
     def shootback(self):
         now = pygame.time.get_ticks()
         if now - self.last_bullet >= self.bullet_cooldown:
-            bullet = Bullet_Red(self.rect.center) # sprite
+            bullet = Bullet_Red(center=self.rect.center,target=self.target) # sprite
             self.add_sprite(bullet)
             self.add_bullet(bullet)
             self.last_bullet = now
@@ -76,18 +99,30 @@ class Enemie(pygame.sprite.Sprite):
         self.health_bar.kill()
 
 class Bullet_Red(pygame.sprite.Sprite):
-
-    def __init__(self,center):
+    target : Player.Player
+    def __init__(self,center,target):
         super().__init__()
 
         self.image = AllSettings.bulletred
         self.rect = self.image.get_rect(center=center)
-        self.speedy = 6
+        self.speed = 6
+        self.target_x = target.rect.centerx
+        self.target_y = target.rect.centery
 
     def update(self):
-        self.rect.y += self.speedy
+        self.rect.y += self.speed 
+
+        # Extreme mode bullets fliegen zum Spieler
+        #dx = self.target_x - self.rect.centerx
+        #dy = self.target_y - self.rect.centery
+        #distance = max(abs(dx), abs(dy))
+        #if distance != 0:
+        #    self.rect.x += (dx / distance) * self.speed
+        #    self.rect.y += (dy / distance) * self.speed
+
         if self.rect.y > AllSettings.screen_height:
             self.kill()
+
 
 
         

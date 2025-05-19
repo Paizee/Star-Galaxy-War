@@ -14,6 +14,11 @@ from threading import Thread
 
 
 class game():
+    is_running: bool
+    time_left: int
+    player: Player.Player
+    coins_earned: int
+    
     def __init__(self,player: Player.Player):
         self.is_running = True
         self.time_left = 10 #time left 
@@ -100,7 +105,7 @@ class game():
 
             #spawn enemies
             for i in range(10):
-                en = Enemy.Enemie(add_sprite= add_sprites_to_list, add_bullet= add_bullet_enemy_to_list)
+                en = Enemy.Enemie(add_sprite= add_sprites_to_list, add_bullet= add_bullet_enemy_to_list,player= self.player)
                 if all_sprites_list.has(en) == False: 
                     enemie_list.add(en)
                     all_sprites_list.add(en)

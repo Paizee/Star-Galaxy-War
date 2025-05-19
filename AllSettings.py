@@ -1,11 +1,6 @@
-import importlib
-from tkinter import Menu
-import pygame.gfxdraw
-import time
 import pygame, pygame.mixer
 from pygame.locals import *
 import os
-import random
 
 pygame.init()
 pygame.mixer.init()
@@ -86,14 +81,7 @@ shiptostart = pygame.image.load(os.path.join("data/images","ship.png"))
 Playtostart = pygame.image.load(os.path.join("data/images","Play.png"))
 click = pygame.mixer.Sound(os.path.join("data/sounds","click.wav"))
 
-run = True
-nameinput = False
-emailinput = False
-passwordinput = False
-password2input = False
-Emailsubmitcheck = False
-Passwordsubmitcheck = False
-Namesubmitcheck = False
+
 Usershow  = False
 Userclicked = 0
 Emailcheckfinish = False
@@ -109,5 +97,3 @@ LoginName = ""
 kill = False
 Leader = False
 level1run = False
-reg = False
-log = False

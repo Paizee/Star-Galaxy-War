@@ -63,7 +63,6 @@ class Player(pygame.sprite.Sprite):
                 Player.shoot(self)
                 AllSettings.shot.play()
         if keys[self.settings_key]: # escape => stop game and show menu
-            AllSettings.run = False
             self.stop_game()
             menu = Settingwindow.Menu(player=self)
             menu.Menu()

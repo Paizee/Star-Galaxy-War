@@ -12,7 +12,11 @@ import Player
 import Settingwindow
 
 class Explosion(pygame.sprite.Sprite):
-
+    image: pygame.Surface
+    rect: pygame.Rect
+    frame: int
+    last_update: int
+    frame_rate: int
     def __init__(self,center):
         super().__init__()
         self.image = AllSettings.explosion

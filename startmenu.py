@@ -9,6 +9,8 @@ import level1
 import Player
 import Settingwindow
 from threading import Thread
+import Register
+import Login
 
 background = pygame.image.load(os.path.join("data/images","background.png")).convert()
 Play_ = pygame.image.load(os.path.join("data/images","Play_.png"))
@@ -155,12 +157,8 @@ class Menu():
                 if now - self.last >= self.cooldown:
                     self.last = now
                     AllSettings.click.play()
-                    import Register
-                    AllSettings.Emailsubmitcheck = False
-                    AllSettings.Passwordsubmitcheck = False
-                    AllSettings.Namesubmitcheck = False
-                    thread_reg = Thread(target=Register.Register.runit())
-                    AllSettings.reg = False
+                    reg = Register.Register()
+                    thread_reg = Thread(target=reg.runit())
                     thread_reg.start()
                     
         if self.rect6.collidepoint(pos):
@@ -170,12 +168,8 @@ class Menu():
                 if now - self.last >= self.cooldown:
                     self.last = now
                     AllSettings.click.play()
-                    import Login
-                    AllSettings.Emailsubmitcheck = False
-                    AllSettings.Passwordsubmitcheck = False
-                    AllSettings.Namesubmitcheck = False
-                    thread_log = Thread(target=Login.Login.runit())
-                    AllSettings.log = False
+                    log = Login.Login()
+                    thread_log = Thread(target=log.runit())
                     thread_log.start()
     
         if self.rect8.collidepoint(pos):

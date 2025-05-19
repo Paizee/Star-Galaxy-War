@@ -1,19 +1,14 @@
 
-from tkinter import ALL
-import pygame.gfxdraw
-import time
-import pygame, pygame.mixer
+import pygame
 from pygame.locals import *
 import os
-import random
 import AllSettings
-import Animations
-import Enemy
-import level1
-import Player
-import Settingwindow
 
 class Leaderboard():
+    image: pygame.Surface
+    backimage: pygame.Surface
+    rect1: pygame.Rect
+    rect2: pygame.Rect
     def __init__(self):
         self.image = AllSettings.leaderboardpng
         self.backimage = AllSettings.Back

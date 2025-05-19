@@ -1,16 +1,9 @@
-import pygame.gfxdraw
-import time
-import pygame, pygame.mixer
+import pygame
 from pygame.locals import *
 import os
-import sys
-import random
 import AllSettings
-import Animations
-import Enemy
-import level1
-import Settingwindow
 from verify_email import verify_email
+import Database
 
 class Register():
     def __init__(self):
@@ -39,6 +32,15 @@ class Register():
         self.rect5.y = 630
         self.rect6.x = 708
         self.rect6.y = 630
+        self.db = Database.Database()
+        self.nameinput = False
+        self.emailinput = False
+        self.passwordinput = False
+        self.password2input = False 
+        self.Emailsubmitcheck = False
+        self.Passwordsubmitcheck = False
+        self.Namesubmitcheck = False   
+        self.reg = False    
 
     def draw(self):
         pos = pygame.mouse.get_pos()
@@ -60,49 +62,49 @@ class Register():
         if self.rect1.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
             if pygame.mouse.get_pressed()[0] == 1:
-                AllSettings.nameinput = True
-                AllSettings.emailinput = False
-                AllSettings.passwordinput = False
-                AllSettings.password2input = False                   
+                self.nameinput = True
+                self.emailinput = False
+                self.passwordinput = False
+                self.password2input = False                   
 
         if self.rect2.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
             if pygame.mouse.get_pressed()[0] == 1:
-                AllSettings.nameinput = False
-                AllSettings.emailinput = True
-                AllSettings.passwordinput = False
-                AllSettings.password2input = False
+                self.nameinput = False
+                self.emailinput = True
+                self.passwordinput = False
+                self.password2input = False
 
         if self.rect3.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
             if pygame.mouse.get_pressed()[0] == 1:
-                AllSettings.emailinput = False
-                AllSettings.nameinput = False
-                AllSettings.passwordinput = True
-                AllSettings.password2input = False
+                self.emailinput = False
+                self.nameinput = False
+                self.passwordinput = True
+                self.password2input = False
         if self.rect4.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_IBEAM)
             if pygame.mouse.get_pressed()[0] == 1:
-                AllSettings.emailinput = False
-                AllSettings.nameinput = False
-                AllSettings.passwordinput = False
-                AllSettings.password2input = True
+                self.emailinput = False
+                self.nameinput = False
+                self.passwordinput = False
+                self.password2input = True
         if self.rect5.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.click.play()
-                AllSettings.Emailsubmitcheck = False
-                AllSettings.Passwordsubmitcheck = False
-                AllSettings.Namesubmitcheck = False   
-                AllSettings.reg = True
+                self.Emailsubmitcheck = False
+                self.Passwordsubmitcheck = False
+                self.Namesubmitcheck = False   
+                self.reg = True
         if self.rect6.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.click.play()
-                AllSettings.Emailsubmitcheck = True
-                AllSettings.Passwordsubmitcheck = True
-                AllSettings.Namesubmitcheck = True
-    def runit():
+                self.Emailsubmitcheck = True
+                self.Passwordsubmitcheck = True
+                self.Namesubmitcheck = True
+    def runit(self):
         drawit = Register()
         name_text = ""
         email_text = ""
@@ -113,74 +115,73 @@ class Register():
         namefail = ""
         last = pygame.time.get_ticks()
         cooldown = 600
-        while not AllSettings.reg:
+        while not self.reg:
             for event in pygame.event.get():
                 if event.type==QUIT:
                     pygame.quit()
                     exit()
-                if AllSettings.nameinput == True:
+                if self.nameinput == True:
                     if event.type == pygame.KEYDOWN:
                         if len(name_text) < 25:
                             if pygame.key.get_pressed()[K_BACKSPACE]:
-                                AllSettings.Namesubmitcheck = False
+                                self.Namesubmitcheck = False
                                 name_text = name_text[:-1]
                             else: name_text += event.unicode
                             if pygame.key.get_pressed()[K_RETURN]:
-                                AllSettings.nameinput = False
-                if AllSettings.emailinput == True:
+                                self.nameinput = False
+                if self.emailinput == True:
                     if event.type == pygame.KEYDOWN:
                         if len(name_text) < 25:
                             if pygame.key.get_pressed()[K_BACKSPACE]:
-                                AllSettings.Emailsubmitcheck = False
+                                self.Emailsubmitcheck = False
                                 email_text = email_text[:-1]
                             else: email_text += event.unicode
                             if pygame.key.get_pressed()[K_RETURN]:
-                                AllSettings.emailinput = False
-                if AllSettings.passwordinput == True:
+                                self.emailinput = False
+                if self.passwordinput == True:
                     if event.type == pygame.KEYDOWN:
                         if len(name_text) < 25:
                             if pygame.key.get_pressed()[K_BACKSPACE]:
-                                AllSettings.Passwordsubmitcheck = False
+                                self.Passwordsubmitcheck = False
                                 password_text = password_text[:-1]
                             else: password_text += event.unicode
                             if pygame.key.get_pressed()[K_RETURN]:
-                                AllSettings.passwordinput = False
+                                self.passwordinput = False
                                 
-                if AllSettings.password2input == True:
+                if self.password2input == True:
                     if event.type == pygame.KEYDOWN:
                         if len(name_text) < 25:
                             if pygame.key.get_pressed()[K_BACKSPACE]:
-                                AllSettings.Passwordsubmitcheck = False
+                                self.Passwordsubmitcheck = False
                                 password2_text = password2_text[:-1]
                             else: password2_text += event.unicode
                             if pygame.key.get_pressed()[K_RETURN]:
-                                AllSettings.password2input = False
+                                self.password2input = False
                             
-            if AllSettings.Passwordsubmitcheck == True:
+            if self.Passwordsubmitcheck == True:
                 if not password_text == password2_text:
                     passwordfail = "Password must be the same!"
                 else: 
                     passwordfail = ""
                     AllSettings.Passwordcheckfinish = True
             
-            if AllSettings.Namesubmitcheck == True:
-                #result = collection.find_one({"Name":name_text})
-                if result == None:
+            if self.Namesubmitcheck == True:
+                if self.db.check_username_given(username=name_text):
                     namefail = ""
                     AllSettings.Namecheckfinish = True
                 else:
                     namefail = "Name is already given!" 
 
-            if AllSettings.Emailsubmitcheck == True:
+            if self.Emailsubmitcheck == True:
                 if verify_email(email_text):
                     emailfail = ""
                     AllSettings.Emailcheckfinish = True
                 else: emailfail = "Email is not valid!"
-            if AllSettings.Passwordsubmitcheck == False:
+            if self.Passwordsubmitcheck == False:
                 passwordfail = ""
-            if AllSettings.Emailsubmitcheck == False:
+            if self.Emailsubmitcheck == False:
                 emailfail = ""
-            if AllSettings.Namesubmitcheck == False:
+            if self.Namesubmitcheck == False:
                 namefail = ""
 
             if AllSettings.Emailcheckfinish == True:
@@ -189,14 +190,8 @@ class Register():
                         now = pygame.time.get_ticks()
                         if now - last >= cooldown:
                             last = now
-                            post = {"Name":name_text,"Email":email_text,"Password":password2_text,"Coins": 0}
-                            #collection.insert_one(post)
-                            # if not collection.find_one({"Email":email_text,"Password":password2_text}) == None:
-                            #    AllSettings.Emailcheckfinish = False
-                             #   AllSettings.Passwordcheckfinish = False
-                              #  AllSettings.Namecheckfinish = False
-                               # AllSettings.LoginName = name_text
-                                # AllSettings.login = True
+                            self.db.create_user(email=email_text,password=password2_text,username=name_text)
+                            
                             
 
                 
@@ -221,7 +216,7 @@ class Register():
             AllSettings.DISPLAY.blit(namefail_showtext,(430,240))
             if AllSettings.login == True:
                 AllSettings.DISPLAY.blit(login_showtext,(580,650))
-                AllSettings.reg = True
+                self.reg = True
             
             pygame.display.update()
                 
