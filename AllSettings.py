@@ -81,19 +81,3 @@ shiptostart = pygame.image.load(os.path.join("data/images","ship.png"))
 Playtostart = pygame.image.load(os.path.join("data/images","Play.png"))
 click = pygame.mixer.Sound(os.path.join("data/sounds","click.wav"))
 
-
-Usershow  = False
-Userclicked = 0
-Emailcheckfinish = False
-Passwordcheckfinish = False 
-Namecheckfinish = False
-login = False
-
-
-volume = 100
-musicvolume = 100
-
-LoginName = ""
-kill = False
-Leader = False
-level1run = False

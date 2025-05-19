@@ -39,7 +39,6 @@ class Play():
 
         self.ship = False
 
-
     def draw(self):
         pos = pygame.mouse.get_pos()
         AllSettings.DISPLAY.blit(AllSettings.Playtostart,(self.rect1.x,self.rect1.y))

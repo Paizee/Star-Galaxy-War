@@ -1,16 +1,16 @@
 
-import pygame, pygame.mixer
+import pygame
 from pygame.locals import *
 import os
 import AllSettings
-import Animations
-import Enemy
 import level1
 import Player
 import Settingwindow
 from threading import Thread
 import Register
 import Login
+import Database
+import Leaderboard
 
 background = pygame.image.load(os.path.join("data/images","background.png")).convert()
 Play_ = pygame.image.load(os.path.join("data/images","Play_.png"))
@@ -19,16 +19,41 @@ quit = pygame.image.load(os.path.join("data/images","quit.png"))
 quit = pygame.transform.smoothscale(quit,(350,100))
 Settingstext = pygame.image.load(os.path.join("data/images","Settings.png"))
 Settingstext = pygame.transform.smoothscale(Settingstext,(350,100))
-Leaderboard = pygame.image.load(os.path.join("data/images","Leaderboard.png"))
-Leaderboard = pygame.transform.smoothscale(Leaderboard,(350,100))
+Leaderboard_Label = pygame.image.load(os.path.join("data/images","Leaderboard.png"))
+Leaderboard_Label = pygame.transform.smoothscale(Leaderboard_Label,(350,100))
 
 
 class Menu():
+    Play_image: pygame.Surface
+    quit_image: pygame.Surface
+    Settingstext_image: pygame.Surface
+    Leaderboard_image: pygame.Surface
+    user_image: pygame.Surface
+    loginuserimagepng: pygame.Surface
+    registeruserimagepng: pygame.Surface
+    logoutimagepng: pygame.Surface
+    rect1: pygame.Rect
+    rect2: pygame.Rect
+    rect3: pygame.Rect
+    rect4: pygame.Rect
+    rect5: pygame.Rect
+    rect6: pygame.Rect
+    rect7: pygame.Rect
+    rect8: pygame.Rect
+    
+    last: int
+    cooldown: int
+    
+    isrunning: bool
+    Usershow: bool
+
+    player: Player.Player
+    
     def __init__(self):
         self.Play_image = Play_
         self.quit_image = quit
         self.Settingstext_image = Settingstext
-        self.Leaderboard_image = Leaderboard
+        self.Leaderboard_image = Leaderboard_Label
         self.user_image = AllSettings.userimagepng
         self.loginuserimagepng = AllSettings.loginuserimagepng
         self.registeruserimagepng = AllSettings.registeruserimagepng
@@ -57,20 +82,25 @@ class Menu():
         self.rect7.y = AllSettings.screen_height/3.353
         self.rect8.x = AllSettings.screen_width/1.3
         self.rect8.y = AllSettings.screen_height/3.353
+        
         self.last = pygame.time.get_ticks()
         self.cooldown = 300
+        
         self.isrunning = True
+        self.Usershow = False
         
         self.player = Player.Player()
 
     def drawcoinsunlogged(self):
-        font_objcoins = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"), 64)
-        font_objnotlogged = pygame.font.Font(os.path.join("data/fonts","Rubik-Bold.TTF"), 16)
-        textcoin = font_objcoins.render(str(self.player.coins)+"💰", True, AllSettings.Yellow)
-        infonotlogged = font_objnotlogged.render("You're not logged in, the coins are not save!",True,(255,0,0))
-        AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_width/1.2,AllSettings.screen_height/1.2))
-        AllSettings.DISPLAY.blit(infonotlogged,(AllSettings.screen_width/1.5,AllSettings.screen_height/1.05))
-        
+        try: 
+            font_objcoins = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"), 64)
+            font_objnotlogged = pygame.font.Font(os.path.join("data/fonts","Rubik-Bold.TTF"), 16)
+            textcoin = font_objcoins.render(str(self.player.coins)+"💰", True, AllSettings.Yellow)
+            infonotlogged = font_objnotlogged.render("You're not logged in, the coins are not save!",True,(255,0,0))
+            AllSettings.DISPLAY.blit(textcoin,(AllSettings.screen_width/1.2,AllSettings.screen_height/1.2))
+            AllSettings.DISPLAY.blit(infonotlogged,(AllSettings.screen_width/1.5,AllSettings.screen_height/1.05))
+        except: print("error loading coins")
+            
     def drawcoinsloggedin(self):
         font_objcoins = pygame.font.Font(os.path.join("data/fonts","OpenSansEmoji.ttf"), 64)
         textcoin = font_objcoins.render(str(self.player.coins)+"💰", True, AllSettings.Yellow)
@@ -104,7 +134,7 @@ class Menu():
                                     if not self.rect8.collidepoint(pos):
                                         pygame.mouse.set_system_cursor(SYSTEM_CURSOR_ARROW)
 
-                
+                    
         # start game
         if self.rect1.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
@@ -112,7 +142,10 @@ class Menu():
                 AllSettings.click.play()
                 game = level1.game(player=self.player)
                 thread_lev1 = Thread(target=game.runit())
+                self.isrunning = False
                 thread_lev1.start()
+                self.isrunning = True
+                game.reset()
         # quit        
         if self.rect2.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
@@ -127,14 +160,14 @@ class Menu():
                 menu = Settingwindow.Menu(player=self.player)
                 thread_menu = Thread(target=menu.SettingsMenu())
                 thread_menu.start()
+                
          #leaderboard       
         if self.rect4.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.click.play()
-                import Leaderboard
-                thread_lead = Thread(target=Leaderboard.Leaderboard.runit(self))
-                AllSettings.Leader = False
+                leaderboard = Leaderboard.Leaderboard()
+                thread_lead = Thread(target=leaderboard.runit())
                 thread_lead.start()
                 
         if self.rect5.collidepoint(pos):
@@ -144,11 +177,7 @@ class Menu():
                 if now - self.last >= self.cooldown:
                     self.last = now
                     AllSettings.click.play()
-                    AllSettings.Usershow = True
-                    AllSettings.Userclicked +=1
-                    if AllSettings.Userclicked > 1:
-                        AllSettings.Usershow = False
-                        AllSettings.Userclicked = 0
+                    self.Usershow = not self.Usershow
                         
         if self.rect7.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
@@ -157,9 +186,10 @@ class Menu():
                 if now - self.last >= self.cooldown:
                     self.last = now
                     AllSettings.click.play()
-                    reg = Register.Register()
+                    reg = Register.Register(player=self.player)
                     thread_reg = Thread(target=reg.runit())
                     thread_reg.start()
+                    self.Usershow = False
                     
         if self.rect6.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
@@ -168,41 +198,45 @@ class Menu():
                 if now - self.last >= self.cooldown:
                     self.last = now
                     AllSettings.click.play()
-                    log = Login.Login()
+                    log = Login.Login(player=self.player)
                     thread_log = Thread(target=log.runit())
                     thread_log.start()
+                    self.Usershow = False
     
         if self.rect8.collidepoint(pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
             if pygame.mouse.get_pressed()[0] == 1:
                 AllSettings.click.play()
-                AllSettings.login = False
+                db = Database.Database()
+                db.logout(player=self.player)
                 
     def run(self):   
-        menu = Menu()
         while self.isrunning:
+              
+            if self.player.user_id != None: #logged in
+                if self.Usershow:
+                    self.draw()
+                    self.drawUserloggedin()
+                    self.drawcoinsloggedin()
+                else:
+                    self.draw()
+                    self.drawcoinsloggedin()
+                    
+            else:
+                if self.Usershow:
+                    self.draw()
+                    self.drawUserunlogged()
+                    self.drawcoinsunlogged()
+
+                else: 
+                    self.draw()
+                    self.drawcoinsunlogged()
+
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
                     exit() 
-                    
-            if AllSettings.login:
-                if AllSettings.Usershow:
-                    menu.draw()
-                    menu.drawUserloggedin()
-                    menu.drawcoinsloggedin()
-                else:
-                    menu.draw()
-                    menu.drawcoinsloggedin()
-                    
-            if not AllSettings.login:
-                if AllSettings.Usershow:
-                    menu.draw()
-                    menu.drawUserunlogged()
-                    menu.drawcoinsunlogged()
-
-                else: 
-                    menu.draw()
-                    menu.drawcoinsunlogged()
-     
-            pygame.display.update()
+            
+            try: 
+                pygame.display.update()
+            except: print("error updating screen")

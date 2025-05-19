@@ -13,6 +13,7 @@ import Player
 import Settingwindow
 from threading import Thread
 from enum import Enum
+from typing import Callable
 
 class Window(Enum):
     Sound = "Sound"
@@ -20,10 +21,17 @@ class Window(Enum):
     Control = "Control"
 
 class Menu():
+    is_running: bool
+    selected_window: Window
+    settings_menu_selected: bool
+    back: bool
+    player: Player.Player
+    #video
+    res_frame_open: bool
     def __init__(self,player: Player.Player):
         super().__init__()
         self.is_running = True
-        self.selected_window = Window.Sound,
+        self.selected_window = Window.Sound
         self.settings_menu_selected = True
         self.back = False
         self.player = player
@@ -93,7 +101,7 @@ class Menu():
                 volume_bars.append(pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(620 + (35 * len(volume_bars) - 1),211,20,40),border_radius=10))
                 update_volume()
 
-        volume_plus_button = Volume_Plus(function=volume_plus,x=975,y=211)
+        volume_plus_button = Volume_Plus(_function=volume_plus,x=975,y=211)
 
 
         def volume_minus(): 
@@ -104,7 +112,7 @@ class Menu():
                 volume_bars.remove(volume_bars[len(volume_bars) - 1])
                 update_volume()
         
-        volume_minus_button = Volume_Minus(function=volume_minus,x=550,y=211)
+        volume_minus_button = Volume_Minus(_function=volume_minus,x=550,y=211)
 
 
         def music_volume_plus(): 
@@ -113,7 +121,7 @@ class Menu():
                 music_bars.append(pygame.draw.rect(AllSettings.DISPLAY,AllSettings.WHITE,pygame.Rect(620 + (35 * len(music_bars) - 1),295,20,40),border_radius=10))
                 update_music_volume()
 
-        music_volume_plus_button = Volume_Plus(function=music_volume_plus,x=975,y=295)
+        music_volume_plus_button = Volume_Plus(_function=music_volume_plus,x=975,y=295)
         
 
         def music_volume_minus(): 
@@ -123,7 +131,7 @@ class Menu():
                 music_bars.remove(music_bars[len(music_bars) - 1])
                 update_music_volume()
 
-        music_volume_minus_button = Volume_Minus(function=music_volume_minus,x=550,y=295)
+        music_volume_minus_button = Volume_Minus(_function=music_volume_minus,x=550,y=295)
 
 
         volume_label = Volume_Label()
@@ -321,7 +329,8 @@ class Menu():
             pygame.display.update() 
 
 class ButtonMenu():
-
+    image: pygame.Surface
+    rect: pygame.Rect
     def __init__(self):
         self.image = AllSettings.butMenu
         self.rect = self.image.get_rect()
@@ -338,11 +347,10 @@ class ButtonMenu():
                 menu.player.stop_game()
                 menu.player.stop_game()
                 menu.is_running = False
-                
-
-            
+                     
 class ButtonSettings():
-
+    image: pygame.Surface
+    rect: pygame.Rect
     def __init__(self):
         self.image = AllSettings.butsettings
         self.rect = self.image.get_rect()
@@ -360,7 +368,8 @@ class ButtonSettings():
                 menu.SettingsMenu()
 
 class ButtonContinue():
-
+    image: pygame.Surface
+    rect: pygame.Rect
     def __init__(self):
         self.image = AllSettings.butContinue
         self.rect = self.image.get_rect()
@@ -380,6 +389,8 @@ class ButtonContinue():
                 menu.is_running = False
 
 class SettingsMenuBackground():
+    image: pygame.Surface
+    rect: pygame.Rect
     def __init__(self):
         self.image = AllSettings.Settingsmenu_bg
         self.rect = self.image.get_rect()
@@ -389,6 +400,8 @@ class SettingsMenuBackground():
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
 class SoundSettings():
+    image: pygame.Surface
+    rect: pygame.Rect
     def __init__(self):
         self.image = AllSettings.Sound
         self.rect = self.image.get_rect()
@@ -405,6 +418,8 @@ class SoundSettings():
                 menu.Soundmenu()
 
 class VideoSettings():
+    image: pygame.Surface
+    rect: pygame.Rect
     def __init__(self):
         self.image = AllSettings.Video
         self.rect = self.image.get_rect()
@@ -422,6 +437,8 @@ class VideoSettings():
                 menu.VideoSettings()
 
 class ControlsSettings():
+    image: pygame.Surface
+    rect: pygame.Rect
     def __init__(self):
         self.image = AllSettings.Controls
         self.rect = self.image.get_rect()
@@ -438,6 +455,8 @@ class ControlsSettings():
                 menu.Controlmenu()
 
 class backSettingsMenu():
+    image: pygame.Surface
+    rect: pygame.Rect
     def __init__(self):
         self.image = AllSettings.Back
         self.rect = self.image.get_rect()
@@ -455,6 +474,8 @@ class backSettingsMenu():
                 menu.back = True      
 
 class Volume_Label():
+    image: pygame.Surface
+    rect: pygame.Rect
     def __init__(self):
         self.image = AllSettings.volumepng
         self.rect = self.image.get_rect()
@@ -464,14 +485,19 @@ class Volume_Label():
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
 class Volume_Plus():
-    def __init__(self,function,x,y):
+    image: pygame.Surface
+    rect: pygame.Rect
+    cooldown: int
+    last: int
+    _function: Callable
+    def __init__(self,_function,x,y):
         self.image = AllSettings.plus
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
         self.cooldown = 300
         self.last = pygame.time.get_ticks()
-        self.function = function
+        self._function = _function
 
     def draw(self):
         pos = pygame.mouse.get_pos()
@@ -484,17 +510,22 @@ class Volume_Plus():
                 if now - self.last >= self.cooldown:
                     self.last = now
                     AllSettings.click.play()
-                    self.function()
+                    self._function()
 
 class Volume_Minus():
-    def __init__(self,function,x,y):
+    image: pygame.Surface
+    rect: pygame.Rect
+    cooldown: int
+    last: int
+    _function: Callable
+    def __init__(self,_function,x,y):
         self.image = AllSettings.minus
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
         self.cooldown = 300 
         self.last = pygame.time.get_ticks()
-        self.function = function
+        self._function = _function
 
     def draw(self):
         pos = pygame.mouse.get_pos()
@@ -507,9 +538,11 @@ class Volume_Minus():
                 if now - self.last >= self.cooldown:
                     self.last = now
                     AllSettings.click.play()
-                    self.function()
+                    self._function()
 
 class Music_Label():
+    image: pygame.Surface
+    rect: pygame.Rect
     def __init__(self):
         self.image = AllSettings.musicpng
         self.rect = self.image.get_rect()
@@ -520,6 +553,9 @@ class Music_Label():
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
 class Resolution_Label():
+    image: pygame.Surface
+    rect: pygame.Rect
+
     def __init__(self):
         self.image = AllSettings.reso
         self.rect = self.image.get_rect()
@@ -529,6 +565,10 @@ class Resolution_Label():
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
         
 class Dropdown_Menu():
+    image: pygame.Surface
+    rect: pygame.Rect
+    cooldown: int
+    last: int
     def __init__(self):
         self.image = AllSettings.zeile
         self.rect = self.image.get_rect()
@@ -549,7 +589,10 @@ class Dropdown_Menu():
                     self.last = now
                     AllSettings.click.play()
                     toggle_res_frame()
+                    
 class Dropdown_Frame():
+    image: pygame.Surface
+    rect: pygame.Rect
     def __init__(self):
         self.image = AllSettings.rahmen
         self.rect = self.image.get_rect()
@@ -559,6 +602,9 @@ class Dropdown_Frame():
         AllSettings.DISPLAY.blit(self.image,(self.rect.x,self.rect.y))
         
 class currentResolution_Label():
+    font: pygame.font
+    text: pygame.Surface
+    rect: pygame.Rect
     def __init__(self):
         font = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 32)
         self.text = font.render(f"{AllSettings.screen_width} x {AllSettings.screen_height}", True, AllSettings.Yellow)
@@ -570,6 +616,12 @@ class currentResolution_Label():
         AllSettings.DISPLAY.blit(self.text,(self.rect.x, self.rect.y))
 
 class res_dropdown_button():
+    text: pygame.Surface
+    rect: pygame.Rect
+    cooldown: int
+    last: int
+    width: int
+    height: int
     def __init__(self,x,y,width,height):
         font = pygame.font.Font(os.path.join("data/fonts","Starjedi.ttf"), 32)
         self.text = font.render(f"{width} x {height}", True, AllSettings.Yellow)
@@ -599,6 +651,8 @@ class res_dropdown_button():
                     
 
 class Fullscreen_Label():
+    image: pygame.Surface
+    rect: pygame.Rect
     def __init__(self):
         self.image = AllSettings.Fullscreenpng
         self.rect = self.image.get_rect()
@@ -608,6 +662,10 @@ class Fullscreen_Label():
         AllSettings.DISPLAY.blit(self.image,(self.rect.x, self.rect.y))
 
 class Fullscreencheckbox():
+    image: pygame.Surface
+    rect: pygame.Rect
+    cooldown: int
+    last: int
     def __init__(self):
         self.image = AllSettings.xkasten
         self.rect = self.image.get_rect()
@@ -630,6 +688,8 @@ class Fullscreencheckbox():
                     pygame.display.toggle_fullscreen()
                     
 class controlesettings():
+    image: pygame.Surface
+    rect: pygame.Rect
     def __init__(self):
         self.image = AllSettings.keyspng
         self.rect = self.image.get_rect()       
@@ -639,6 +699,16 @@ class controlesettings():
         AllSettings.DISPLAY.blit(self.image,(self.rect.x,self.rect.y))
 
 class Key_Labels():
+    shootimage: pygame.Surface
+    moverightimage: pygame.Surface
+    moveleftimage: pygame.Surface
+    settingspng: pygame.Surface
+    
+    rect: pygame.Rect
+    rect1: pygame.Rect
+    rect2: pygame.Rect
+    rect3: pygame.Rect
+    
     def __init__(self):
         self.shootimage = AllSettings.shootpng
         self.moverightimage = AllSettings.moverightpng
@@ -663,6 +733,21 @@ class Key_Labels():
         AllSettings.DISPLAY.blit(self.settingspng,(self.rect3.x,self.rect3.y))
 
 class Key_Input_Boxes():
+    keyinput: pygame.Surface
+    keyinput1: pygame.Surface
+    keyinput2: pygame.Surface
+    keyinput3: pygame.Surface
+    
+    rect: pygame.Rect
+    rect1: pygame.Rect
+    rect2: pygame.Rect
+    rect3: pygame.Rect
+    
+    start_input_shoot: bool
+    start_input_move_left: bool
+    start_input_move_right: bool
+    start_input_settings: bool
+    
     def __init__(self):
         self.keyinput = AllSettings.keyinputpng
         self.keyinput1 = AllSettings.keyinputpng
@@ -680,8 +765,6 @@ class Key_Input_Boxes():
         self.rect2.y = 384
         self.rect3.x = 900
         self.rect3.y = 484
-        self.start_time = time.time()
-        self.seconds = int(10)
         self.start_input_shoot = False
         self.start_input_move_left = False
         self.start_input_move_right = False
@@ -746,13 +829,6 @@ class Key_Input_Boxes():
                 self.start_input_settings = False
                 player.settings_key = key
                    
-                
-                
-cooldown0 = 1200
-
-last0 = pygame.time.get_ticks()
-
-
 SettingsSound_Label = SoundSettings()
 SettingsVideo_Label = VideoSettings()
 SettingsControls_Label = ControlsSettings()

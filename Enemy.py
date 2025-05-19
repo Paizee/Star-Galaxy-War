@@ -10,6 +10,8 @@ import Enemy
 import level1
 import Player
 import Settingwindow
+from typing import Callable
+
 
 class Enemie(pygame.sprite.Sprite):
     id: int
@@ -29,8 +31,8 @@ class Enemie(pygame.sprite.Sprite):
     health: int
     standard_health: int
 
-    add_sprite = function
-    add_bullet = function
+    add_sprite = Callable
+    add_bullet = Callable
 
     bullet_cooldown: int
     last_bullet: int
@@ -93,12 +95,18 @@ class Enemie(pygame.sprite.Sprite):
     def UpdateHealthBar(self): 
         self.health_bar.x = self.rect.x
         self.health_bar.y = self.rect.y
-        self.health_bar.percentage = (self.health / self.standard_health) * 100
+        self.health_bar.percentage = round((self.health / self.standard_health) * 100)
 
     def kill_healthbar(self):
         self.health_bar.kill()
 
 class Bullet_Red(pygame.sprite.Sprite):
+    image: pygame.Surface
+    rect: pygame.Rect
+    speed: int
+    target_x: float
+    target_y: float
+    
     target : Player.Player
     def __init__(self,center,target):
         super().__init__()
@@ -113,6 +121,7 @@ class Bullet_Red(pygame.sprite.Sprite):
         self.rect.y += self.speed 
 
         # Extreme mode bullets fliegen zum Spieler
+        
         #dx = self.target_x - self.rect.centerx
         #dy = self.target_y - self.rect.centery
         #distance = max(abs(dx), abs(dy))
@@ -127,6 +136,13 @@ class Bullet_Red(pygame.sprite.Sprite):
 
         
 class Health_Bar(pygame.sprite.Sprite):
+    
+    image: pygame.Surface
+    rect: pygame.Rect
+
+    x: int
+    y: int
+    percentage: int
 
     def __init__(self,x,y,percentage):
         super().__init__()

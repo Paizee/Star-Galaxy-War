@@ -10,6 +10,7 @@ import Enemy
 import level1
 import Player
 import Settingwindow
+from typing import Callable
 
 
 class Player(pygame.sprite.Sprite):
@@ -18,10 +19,10 @@ class Player(pygame.sprite.Sprite):
     speedx: int
     last: int
     cooldown: int
-    add_bullet: function
-    add_sprite: function
-    stop_game: function
-    resume_game: function
+    add_bullet: Callable
+    add_sprite: Callable
+    stop_game: Callable
+    resume_game: Callable
     health: int
     standart_health: int
     coins: int
@@ -64,6 +65,8 @@ class Player(pygame.sprite.Sprite):
         self.music_volume = 100
         #video
         self.fullscreen = False
+        #db
+        self.user_id = None
     
     def add_coins(self,amount):
         self.coins += amount
@@ -108,12 +111,15 @@ class Player(pygame.sprite.Sprite):
 
 
 class Bullet_Laser(pygame.sprite.Sprite):
+    image: pygame.Surface
+    rect: pygame.Rect
+    speedy: int
 
     def __init__(self,start_x,start_y):
         super().__init__()
         self.image = AllSettings.laserbullet
         self.rect = self.image.get_rect()
-        self.speedy = 10
+        self.speedy = 6
         self.rect.x = start_x + 40
         self.rect.y = start_y - 25
 
