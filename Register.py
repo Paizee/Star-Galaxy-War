@@ -6,6 +6,27 @@ from verify_email import verify_email
 import Database
 
 class Register():
+    image: pygame.Surface
+    backimage: pygame.Surface
+    registerinputimage: pygame.Surface
+    submitimage: pygame.Surface
+    rect: pygame.Rect
+    rect1: pygame.Rect
+    rect2: pygame.Rect
+    rect3: pygame.Rect
+    rect4: pygame.Rect
+    rect5: pygame.Rect
+    rect6: pygame.Rect
+    db = Database.Database()
+    nameinput: bool 
+    emailinput: bool 
+    passwordinput: bool 
+    password2input: bool  
+    Emailsubmitcheck: bool 
+    Passwordsubmitcheck: bool 
+    Namesubmitcheck: bool 
+    reg: bool   
+    
     def __init__(self):
         self.image = AllSettings.registerimagepng
         self.backimage = AllSettings.Back
