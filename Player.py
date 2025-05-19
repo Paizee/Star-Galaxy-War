@@ -13,6 +13,29 @@ import Settingwindow
 
 
 class Player(pygame.sprite.Sprite):
+    image: pygame.Surface
+    rect: pygame.Rect
+    speedx: int
+    last: int
+    cooldown: int
+    add_bullet: function
+    add_sprite: function
+    stop_game: function
+    resume_game: function
+    health: int
+    standart_health: int
+    coins: int
+    name:str
+    #keys
+    move_left_key:int
+    move_right_key:int
+    shoot_key:int
+    settings_key:int
+    #sound
+    volume: int
+    music_volume: int
+    #video
+    fullscreen: bool
     def __init__(self):
         super().__init__()
 
